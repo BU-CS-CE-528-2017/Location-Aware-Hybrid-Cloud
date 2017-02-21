@@ -6,3 +6,5 @@ Setting up babel environment:
   3. Install babel https://babeljs.io/docs/setup/#installation  (Ex $ npm install babel-core babel-cli)
 https://www.youtube.com/watch?v=sZ0z7B7QmjI
 https://github.com/bradtraversy/youtube_es2015_source/tree/master/01_babel
+  4. $ npm run buld
+  
