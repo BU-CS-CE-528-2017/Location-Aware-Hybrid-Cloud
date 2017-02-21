@@ -1,4 +1,7 @@
 // index.js
+// calculates and displays prime numbers up to the desired value n
+// accepts user inputted number, if none, uses 100
+// use $ node index.js n
 
 // @remote
 function calcPrimes(n) {
