@@ -4,7 +4,14 @@
 // use $ node index.js n
 
 // @remote
-function calcPrimes(n) {
+function calcPrimes() {
+    var n = process.argv[2];
+    if(n > 0){
+      // pass
+    }
+    else{
+      n = 100;
+    }
     var sieve = [], i, j, primes = [];
     for (i = 2; i <= n; ++i) {
         if (!sieve[i]) {
@@ -24,15 +31,5 @@ function display(l) {
    }
 }
 
-
-var n;
-
-if(process.argv[2] > 0){
-	n = process.argv[2];
-}
-else{
-	n = 100;
-}
-
-const l = calcPrimes(n)
-display(l);
+// const l = calcPrimes()
+// display(l);
