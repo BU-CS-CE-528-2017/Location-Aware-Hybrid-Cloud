@@ -9,8 +9,12 @@
   "description": "test for demo 1",
   "main": "index.js",
   "scripts": {
-    "build": "babel --presets es2015 src -d dist"
+    "build": "babel --presets es2015 src -d local"
   },
+  "scripts": {
+    "build": "babel --presets es2015 src -d remote"
+  },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud.git"
