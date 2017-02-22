@@ -8,9 +8,6 @@
   "description": "test for demo 1",
   "main": "index.js",
   "scripts": {
-    "build": "babel --presets es2015 src -d local"
-  },
-  "scripts": {
     "build": "babel --presets es2015 src -d remote"
   },
 
