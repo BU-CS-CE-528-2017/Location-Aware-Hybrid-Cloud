@@ -3,7 +3,7 @@ module.exports = function(babel) {
         visitor: {
             FunctionDeclaration: function(path) {
                 console.log(path.node.id.name)
-                console.log(path.node.body.body)
+                console.log(path.node.body.body[0].type)
             }
         }
     }
