@@ -2,9 +2,8 @@
   "name": "babel-plugin",
   "version": "1.0.0",
   "babel": {
-    "presets": [
-      "es2015"
-    ]
+    "presets": ["es2015"],
+    "plugins": ["./first-plugin.js"]
   },
   "description": "test for demo 1",
   "main": "index.js",
