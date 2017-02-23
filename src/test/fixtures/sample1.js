@@ -1,9 +1,4 @@
-// index.js
-// calculates and displays prime numbers up to the desired value n
-// accepts user inputted number, if none, uses 100
-// use $ node index.js n
-
-//@cloud
+/*@cloud*/
 function calcPrimes() {
     var n = process.argv[2];
     if(n > 0){
@@ -25,12 +20,17 @@ function calcPrimes() {
     return primes;
 }
 
-//@cloud
+/*@cloud*/
 function display(l) {
    for (i = 0; i < l.length; i++) {
    		console.log(l[i]);
    }
 }
+
+// sample1.js
+// calculates and displays prime numbers up to the desired value n
+// accepts user inputted number, if none, uses 100
+// use $ node index.js n
 
 // const l = calcPrimes()
 // display(l);
