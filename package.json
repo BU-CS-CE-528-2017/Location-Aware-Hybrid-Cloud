@@ -2,15 +2,15 @@
   "name": "babel-plugin",
   "version": "1.0.0",
   "babel": {
-    "presets": ["es2015"],
-    "plugins": ["./first-plugin.js"]
+    "presets": [
+      "es2015"
+    ]
   },
   "description": "test for demo 1",
   "main": "index.js",
   "scripts": {
-    "build": "babel --presets es2015 src -d remote"
+    "build": "babel src --out-dir remote"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud.git"
