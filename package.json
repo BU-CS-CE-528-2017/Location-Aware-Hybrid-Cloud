@@ -9,7 +9,8 @@
   "description": "test for demo 1",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir remote"
+    "test": "npm run build && tape dist/**/test*.js",
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,12 @@
   "bugs": {
     "url": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/issues"
   },
+  "dependencies": {
+    "tape": "4.6.3",
+    "babel-core": "^6.23.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
-    "babel-core": "^6.23.1",
     "babel-preset-es2015": "^6.22.0"
   },
   "homepage": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud#readme"

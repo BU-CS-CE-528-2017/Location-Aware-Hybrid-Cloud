@@ -5,9 +5,8 @@ export default function({types: t}){
     visitor: {
       // visitor contents
       Program(path,file) {
-	//path.insertBefore(t.expressionStatement(t.stringLiteral("This is the local version of the app")));	
-	path.unshiftContainer('body', t.expressionStatement(t.stringLiteral('use helloworld')));
-      }      
+        path.unshiftContainer('body', t.expressionStatement(t.stringLiteral('Added at the top of the file')));
+      }     
     }
   };
 };
