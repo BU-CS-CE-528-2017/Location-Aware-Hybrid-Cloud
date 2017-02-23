@@ -3,7 +3,7 @@
 // accepts user inputted number, if none, uses 100
 // use $ node index.js n
 
-// @remote
+//@cloud
 function calcPrimes() {
     var n = process.argv[2];
     if(n > 0){
@@ -25,6 +25,7 @@ function calcPrimes() {
     return primes;
 }
 
+//@cloud
 function display(l) {
    for (i = 0; i < l.length; i++) {
    		console.log(l[i]);
