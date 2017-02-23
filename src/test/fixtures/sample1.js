@@ -20,7 +20,7 @@ function calcPrimes() {
     return primes;
 }
 
-/*@cloud*/
+/*@local*/
 function display(l) {
    for (i = 0; i < l.length; i++) {
    		console.log(l[i]);
