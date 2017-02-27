@@ -39,11 +39,7 @@ export default function({types: t}){
 	}
 
 	const decorateAsFnInvocation = (node) => {
-		// TODO
-	}
-
-	const saveLambda = (outputFolder) => {
-
+		// TODO This will be called when run in prepare mode
 	}
 
     return {
@@ -85,33 +81,37 @@ export default function({types: t}){
             }
         },
 		post(state) {
-			switch(this.mode) {
+
+			const self = this;
+
+			switch(self.mode) {
 				case 'extract':
-					if (!this.output) {
+					if (!self.output) {
 						// TODO Do additional checks here. Must exists or we can 
 						// create it, must be RW, etc.
 						throw Error('Output folder is not defined');
 					}
 					const writeLambdas = () => {
-						const names = _.keys(this.lambdas);
-						console.log(`Found ${names.length} annotated functions`);
+						const names = _.keys(self.lambdas);
+						console.log(`[Extract] - Found ${names.length} annotated functions`);
 						_.forEach(names, (name) => {
-							console.log(`Writing to ${this.output}/${name}.js}`);
-							fs.writeFileSync(`${this.output}/${name}.js`, beautifier(this.lambdas[name]));
+							console.log(`[Extract] - Writing to ${self.output}/${name}.js}`);
+							fs.writeFileSync(`${self.output}/${name}.js`, beautifier(self.lambdas[name]));
 						});
 					};
-					fs.stat(this.output, function (err, stats){
+					fs.stat(self.output, function (err, stats){
 						if (err) { // Doesn't exist
-							fx.mkdir(this.output, (err) => {
+							fx.mkdir(self.output, (err) => {
 								if (err) {
 									throw err;
 								}
 								writeLambdas();
 							});
+							return;
 						}
 						if (!stats.isDirectory()) {
 							// This isn't a directory!
-							callback(new Error(`${this.output} exists and is not a directory.`));
+							callback(new Error(`${self.output} exists and is not a directory.`));
 						} else {
 							writeLambdas();
 						}

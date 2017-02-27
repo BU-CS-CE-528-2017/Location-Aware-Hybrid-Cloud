@@ -2,18 +2,37 @@ const _ = require('lodash');
 const babel = require('babel-core');
 const beautifier = require('js-beautify').js;
 const fs = require('fs');
+const fx = require('mkdir-recursive');
 const rmdir = require('rmdir');
 const test = require('tape');
 const uuid = require('uuid');
 
 const pluginPath = require.resolve('..');
 
+const scratchDir = `${__dirname}/scratch/`;
 const generatedFiles = [];
+
+test('staging', (t) => {
+    fs.stat(scratchDir, function (err, stats){
+        if (err) { // Doesn't exist
+            fx.mkdir(scratchDir, (err) => {
+                if (err) {
+                    t.end(err);
+                };
+                t.pass('Created scratch dir');
+                t.end();
+            });
+        } else {
+            t.pass('Scratch dir already exists');
+            t.end();
+        }
+    });
+})
 
 test('plugin should extract annotated functions', (t) => {
     var output = babel.transformFileSync(__dirname + '/fixtures/sample1.js', {
 		plugins: [
-            [ pluginPath, { mode: 'extract', output: `${__dirname}/scratch/` } ]
+            [ pluginPath, { mode: 'extract', output: scratchDir } ]
         ],
 	});
     t.pass('Plugin runs without crashing');
@@ -49,7 +68,7 @@ test('plugin should be able to extract a simple function annotated with @cloud',
 
     var output = babel.transformFileSync(fixtureName, {
 		plugins: [
-            [ pluginPath, { mode: 'extract', output: `${__dirname}/scratch/` } ]
+            [ pluginPath, { mode: 'extract', output: scratchDir } ]
         ],
 	});
 
@@ -57,7 +76,7 @@ test('plugin should be able to extract a simple function annotated with @cloud',
     // For some reason the post step execution is not included
     // in the transformFile fn.
     setTimeout(() => {
-        const actual = fs.readFileSync(`${__dirname}/scratch/myAnnotatedFn.js`).toString();
+        const actual = fs.readFileSync(`${scratchDir}/myAnnotatedFn.js`).toString();
         const expected = fs.readFileSync(expectedName).toString();
         t.equal(actual, expected);
         t.end();
@@ -66,7 +85,7 @@ test('plugin should be able to extract a simple function annotated with @cloud',
 });
 
 test('teardown - remove the scratch folder', (t) => {
-    rmdir(`${__dirname}/scratch/`, (err) => {
+    rmdir(scratchDir, (err) => {
         if (err) {
             t.fail(err);
         }
