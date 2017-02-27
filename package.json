@@ -20,8 +20,13 @@
     "url": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/issues"
   },
   "dependencies": {
+    "babel-core": "^6.23.1",
+    "js-beautify": "1.6.11",
+    "lodash": "4.17.4",
+    "mkdir-recursive": "0.2.3",
+    "rmdir": "1.2.0",
     "tape": "4.6.3",
-    "babel-core": "^6.23.1"
+    "uuid": "3.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
