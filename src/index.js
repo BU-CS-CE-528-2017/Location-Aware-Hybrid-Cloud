@@ -46,6 +46,23 @@ export default function({types: t}){
 		// TODO This will be called when run in prepare mode
 	}
 
+	const decorateAsRequest = (node) => {
+		const function_name = node.id.name;
+		const request =`const rp = require('request-promise');
+			const options = {
+				method: 'GET',
+				uri:'https://909obvouza.execute-api.us-west-2.amazonaws.com/Trial'
+			}
+			rp(options)
+			.then(function(response){
+				${function_name}(response);
+			})
+			.catch(function(error){
+				console.log(error);
+			})${astToSourceString(node)}`
+
+			return request;
+	}
 	const return_Visitor = {
  			ReturnStatement(path){
 			const return_value = path.node.argument.name;
@@ -91,8 +108,9 @@ export default function({types: t}){
 					}
 
 				}else{
-					this.local = this.local + astToSourceString(path.node)
+					this.local = decorateAsRequest(path.node);
 				}
+
             }
         },
 		post(state) {

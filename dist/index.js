@@ -45,6 +45,12 @@ exports.default = function (_ref) {
 		// TODO This will be called when run in prepare mode
 	};
 
+	var decorateAsRequest = function decorateAsRequest(node) {
+		var function_name = node.id.name;
+		var request = 'const rp = require(\'request-promise\');\n\t\t\tconst options = {\n\t\t\t\tmethod: \'GET\',\n\t\t\t\turi:\'https://909obvouza.execute-api.us-west-2.amazonaws.com/Trial\'\n\t\t\t}\n\t\t\trp(options)\n\t\t\t.then(function(response){\n\t\t\t\t' + function_name + '(response);\n\t\t\t})\n\t\t\t.catch(function(error){\n\t\t\t\tconsole.log(error);\n\t\t\t})' + astToSourceString(node);
+
+		return request;
+	};
 	var return_Visitor = {
 		ReturnStatement: function ReturnStatement(path) {
 			var return_value = path.node.argument.name;
@@ -90,7 +96,7 @@ exports.default = function (_ref) {
 							throw Error('Unrecognized mode ' + mode + '. Valid options are ["extract", "prepare"]');
 					}
 				} else {
-					this.local = this.local + astToSourceString(path.node);
+					this.local = decorateAsRequest(path.node);
 				}
 			}
 		},
