@@ -7,3 +7,4 @@ Step 3: npm run deploy (deploy on aws lambda && call local.js to display result)
 <br><br>
 #######
 still need to figure out how to deal with the .yml file & Amazon gateway API.
+
