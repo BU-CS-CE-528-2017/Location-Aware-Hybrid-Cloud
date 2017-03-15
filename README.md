@@ -1,8 +1,9 @@
 # Location-Aware-Hybrid-Cloud
 
-Setting up babel environment:
-  1. Install node
-  2. Create package.json https://docs.npmjs.com/getting-started/using-a-package.json
-  3. Install babel https://babeljs.io/docs/setup/#installation  (Ex $ npm install babel-core babel-cli)
-https://www.youtube.com/watch?v=sZ0z7B7QmjI
-https://github.com/bradtraversy/youtube_es2015_source/tree/master/01_babel
+A simple demo program:
+Step 1: npm run build ( genereate es5, node.js compatible file).
+Step 2: npm run test (Let babel plugin work, need more test cases).
+Step 3: npm run deploy (deploy on aws lambda && call local.js to display result).
+
+#######
+still need to figure out how to deal with the .yml file & Amazon gateway API.
