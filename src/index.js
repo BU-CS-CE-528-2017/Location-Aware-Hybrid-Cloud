@@ -1,8 +1,10 @@
 const _ = require('lodash');
+var path = require('path');
 const beautifier = require('js-beautify').js;
 const fs = require('fs');
 const generate = require('babel-generator');
 const fx = require('mkdir-recursive');
+const yaml = require('yaml-js')
 import traverse from "babel-traverse";
 
 export default function({types: t}){
@@ -91,7 +93,7 @@ export default function({types: t}){
 					this.mode = state.opts.mode;
 					this.output = state.opts.output;
 					const name = path.node.id.name;
-
+					console.log(name, this.mode);
 					switch(this.mode) {
 						case 'extract':
 							console.log(`[Extract] - Function "${name}" is annotated with @cloud. Removing from AST`);
@@ -102,6 +104,7 @@ export default function({types: t}){
 								// way we eliminate the chances of having duplicate functions.
 								throw Error(`Duplication function ${name}`);
 							}
+							//const filename = $(__dirname)/	
 							this.lambdas[name] = decorated;
 							path.remove();
 							break;
@@ -136,6 +139,10 @@ export default function({types: t}){
 						_.forEach(names, (name) => {
 							console.log(`[Extract] - Writing to ${self.output}/${name}.js}`);
 							fs.writeFileSync(`${self.output}/${name}.js`, beautifier(self.lambdas[name]));
+							console.log(`[Extract] - Writing to ${self.output}/severless.yml`)
+							const data = yaml.dump({"service": "myService","provider":[{"name": "aws"},{"runtime": "nodejs4.3"}],"functions": [{name: [{'handler': name+'.'+name}]}]});
+							console.log(data);
+							fs.writeFileSync(`${self.output}/serverless.yml`,data)
 						});
 					};
 
