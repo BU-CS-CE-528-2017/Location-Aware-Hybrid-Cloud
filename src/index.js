@@ -31,12 +31,14 @@ export default function({types: t}){
 		// accepts any.
 	
  		const function_name = node.id.name;
-
+ 		const body = astToSourceString(node.body).slice(5,-1);
 		const lambda = `
 			'use strict;'
 
-			module.exports.` + function_name + `= function(event, context, callback)
-				${astToSourceString(node.body)}
+			module.exports.` + function_name + `= function(event, context, callback){
+				var n = event.n;
+				${body}
+			}
 		`
 		return lambda
 		
@@ -49,9 +51,14 @@ export default function({types: t}){
 	const decorateAsRequest = (node) => {
 		const function_name = node.id.name;
 		const request =`const rp = require('request-promise');
+			number = process.argv[2];
 			const options = {
 				method: 'GET',
-				uri:'https://909obvouza.execute-api.us-west-2.amazonaws.com/Trial'
+				uri:'https://909obvouza.execute-api.us-west-2.amazonaws.com/Trial',
+				    qs: {
+				      n : number
+				    },
+   					json: true
 			}
 			rp(options)
 			.then(function(response){

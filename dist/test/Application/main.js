@@ -1,13 +1,17 @@
-  var n = process.argv[2];
+"use strict";
+
+var n = process.argv[2];
 /* @cloud */
 function calcPrimes() {
-    if(n > 0){
-      // pass
+    if (n > 0) {
+        // pass
+    } else {
+        n = 100;
     }
-    else{
-      n = 100;
-    }
-    var sieve = [], i, j, primes = [];
+    var sieve = [],
+        i,
+        j,
+        primes = [];
     for (i = 2; i <= n; ++i) {
         if (!sieve[i]) {
             // i has not been marked -- it is prime
@@ -21,10 +25,10 @@ function calcPrimes() {
 }
 
 function display(l) {
-   for (i = 0; i < l.length; i++) {
-   		console.log(l[i]);
-   }
+    for (i = 0; i < l.length; i++) {
+        console.log(l[i]);
+    }
 }
 
-const l = calcPrimes()
+var l = calcPrimes();
 display(l);
