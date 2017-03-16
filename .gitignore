@@ -6,5 +6,9 @@
 .Spotlight-V100
 .Trashes
 ehthumbs.db
+<<<<<<< HEAD
 Thumbs.db
 node_modules
+=======
+Thumbs.db
+>>>>>>> 8b193eee58ded39e1a7f87aa1b1299fd43a0a235
