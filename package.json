@@ -34,7 +34,7 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "npm run build && tape dist/**/test*.js",
-    "deploy": "cp serverless.yml dist/test/scratch/ && cd dist/test/scratch/ && serverless deploy function --function calcPrimes && node local.js"
+    "deploy": "cp serverless.yml dist/test/scratch/aws/ && cd dist/test/scratch/aws/ && serverless deploy && node ../local.js"
   },
   "repository": {
     "type": "git",

@@ -129,12 +129,20 @@ export default function({types: t}){
 						console.log(`[Extract] - Found ${names.length} annotated functions`);
 						_.forEach(names, (name) => {
 							console.log(`[Extract] - Writing to ${self.output}/${name}.js}`);
-							fs.writeFileSync(`${self.output}/${name}.js`, beautifier(self.lambdas[name]));
+							const function_path = `${self.output}aws/`
+							fx.mkdir(function_path, (err) => {
+								if(err){
+									console.log('error when generate the folder')
+									throw err;
+								}
+							fs.writeFileSync(`${function_path}${name}.js`, beautifier(self.lambdas[name]));
+							});
+		
 						});
 					};
 
 					const writelocal = () => {
-						console.log(`[Extract] - Writing to ${self.output}/local.js}`);
+						console.log(`[Extract] - Writing to ${self.output}/local.js}`);				
 						fs.writeFileSync(`${self.output}/local.js`, beautifier(self.local));
 					};
 
