@@ -1,6 +1,5 @@
 # Location-Aware-Hybrid-Cloud
 
-<<<<<<< HEAD
 A simple demo program:<br><br>
 Step 1: npm run build ( genereate es5, node.js compatible file). <br />
 Step 2: npm run test (Let babel plugin work, need more test cases). <br />
@@ -18,4 +17,3 @@ https://github.com/bradtraversy/youtube_es2015_source/tree/master/01_babel
   4. $ cd src
   5. $ npm run build
   
->>>>>>> 8b193eee58ded39e1a7f87aa1b1299fd43a0a235
