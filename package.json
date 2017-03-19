@@ -47,7 +47,7 @@
     "url": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/issues"
   },
   "dependencies": {
-    "aws-sdk": "^2.7.9",
+    "aws-sdk": "^2.7.9"
   },
   "homepage": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud#readme"
 }
