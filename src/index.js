@@ -135,7 +135,7 @@ export default function({types: t}){
 							for(var i = 0; i < info.length; i++) {
 							   if(info[i] == 'endpoints:'){
 								const endpoints = info[i + 1];
-								var uri = endpoints.slice(9,-1);
+								var uri = endpoints.slice(9,endpoints.length);
 								}
 							}
 							const local_root_path = path.findParent((path) => path.isProgram()); 
