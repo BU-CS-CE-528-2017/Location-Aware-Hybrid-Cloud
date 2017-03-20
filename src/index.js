@@ -25,10 +25,6 @@ export default function({types: t}){
 		return source.code;
 	}
 
-	const checkParams = (node) => {
-                const arg = node.params;
-                return arg;
-	}	
 	// Wraps a node as an AWS lambda function
 	const decorateAsLambda = (node) => {
 		// This is what a lambda function would normally look like
