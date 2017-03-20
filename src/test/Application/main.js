@@ -1,6 +1,6 @@
-  var n = process.argv[2];
 /* @cloud */
-function calcPrimes() {
+function calcPrimes(obj) {
+    var n = obj.n
     if(n > 0){
       // pass
     }
@@ -22,9 +22,9 @@ function calcPrimes() {
 
 function display(l) {
    for (i = 0; i < l.length; i++) {
-   		console.log(l[i]);
+      console.log(l[i]);
    }
 }
-
-const l = calcPrimes()
+obj = {n : 200};
+const l = calcPrimes(obj)
 display(l);

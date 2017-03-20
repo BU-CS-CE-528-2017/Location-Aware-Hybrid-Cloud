@@ -5,6 +5,7 @@ const fs = require('fs');
 const fx = require('mkdir-recursive');
 const rmdir = require('rmdir');
 const test = require('tape');
+const yaml = require('js-yaml');
 const uuid = require('uuid');
 
 const pluginPath = require.resolve('..');
@@ -27,10 +28,10 @@ test('staging', (t) => {
             t.end();
         }
     });
-})
+});
 
 test('plugin should extract annotated functions', (t) => {
-    var output = babel.transformFileSync(__dirname + '/Application/main.js', {
+    babel.transformFileSync(__dirname + '/Application/main.js', {
 		plugins: [
             [ pluginPath, { mode: 'extract', output: scratchDir } ]
         ],
@@ -38,6 +39,8 @@ test('plugin should extract annotated functions', (t) => {
     t.pass('Plugin runs without crashing');
     t.end();
 });
+
+
 
 // test('plugin should be able to extract a simple function annotated with @cloud', (t) => {
 
