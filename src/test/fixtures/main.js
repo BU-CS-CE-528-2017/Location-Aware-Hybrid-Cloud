@@ -17,7 +17,7 @@ function calcPrimes(obj) {
             }
         }
     }
-    return primes;
+    return Promise.resolve(primes);
 }
 
 function display(l) {
@@ -26,5 +26,4 @@ function display(l) {
    }
 }
 obj = {n : 200};
-const l = calcPrimes(obj)
-display(l);
+const l = calcPrimes(obj).then((primes) => display(primes));

@@ -8,16 +8,19 @@ const test = require('tape');
 const yaml = require('js-yaml');
 const uuid = require('uuid');
 
-const pluginPath = require.resolve('..');
+const pluginPath = require.resolve('../parser');
 
 const scratchDir = `${__dirname}/scratch/`;
 const generatedFiles = [];
 
 test('plugin should get local.js ', (t) => {
-    var output = babel.transformFileSync(__dirname + '/Application/main.js', {
-        plugins: [[pluginPath, { mode: 'prepare', output: scratchDir }]]
+    fx.mkdirSync(scratchDir);
+    var output = babel.transformFileSync(__dirname + '/fixtures/main.js', {
+        plugins: [[pluginPath, { mode: 'prepare', output: scratchDir, uris: {'calcPrimes': 'https://some.aws.com/uri'} }]]
     });
     t.pass('Plugin runs without crashing');
-    fs.writeFileSync(scratchDir +'local.js', output.code);
+    fs.writeFileSync(scratchDir + 'local.js', output.code);
+    fs.unlinkSync(`${scratchDir}local.js`);
+    fs.rmdirSync(scratchDir);
     t.end();
 });
