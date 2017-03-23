@@ -37,7 +37,8 @@
     "babel-preset-es2015": "^6.24.0"
   },
   "scripts": {
-    "test": "tape src/**/test*.js",
+    "build": "babel src --out-dir dist",
+    "test": "tape dist/**/test*.js",
     "deploy": "sh ./deploy.sh && sh ./local.sh",
     "local": "node dist/test/scratch/local.js"
   },
