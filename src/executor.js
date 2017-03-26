@@ -3,8 +3,10 @@ const fs = require('fs');
 const fx = require('mkdir-recursive');
 const rread = require('readdir-recursive');
 const pluginPath = require.resolve('./parser');
+const bluebird = require('bluebird');
 const shell = require('shelljs');
 const localpath = `${__dirname}/`;
+const readdir = bluebird.promisify(fs.readdir);
 class Executor {
 
     run(options) {
@@ -21,8 +23,12 @@ class Executor {
                 case 'prepare-local':
                     this.prepareLocal(options);
                     break;
+                case 'test':
+                    this.extractCloud(options);
+                    this.deployCloud(options);
+                    break;
                 case 'live':
-                  this.extractCloud(options).then(() => 
+                  this.extractCloud(options).then(() =>
                         this.deployCloud(options))
                         .then((fnInfo) => this.prepareLocal(options));
                     break;
@@ -48,26 +54,31 @@ class Executor {
     // Runs the plugin in extract mode creating a folder per AWS
     // lambda that needs to be deployed
     extractCloud(options) {
-        const inputPath = path.resolve(options['input-dir']);
-        return new Promise((resolve) => {
-        rread.file(inputPath, (file) => {babel.transformFileSync(file, {
-                plugins: [
-                    [ pluginPath, { mode: 'extract', output: options['output-dir'] } ]
-                ],
-        })
-       }); resolve() 
-    });
-}
+       const inputPath = path.resolve(options['input-dir']);
+       return readdir(inputPath, (err,file) => {
+        file.forEach((doc) => {
+            doc = `${inputPath}/${doc}`
+           babel.transformFileSync(doc, {
+               plugins: [
+                   [ pluginPath, { mode: 'extract', output: options['output-dir'] } ]
+               ],
+           });
+       });
+       });
+   }
     // Runs the serverless tool in each folder created in the extractCloud
     // step. Returns a map containing function names and URIs
     deployCloud(options) {
+        console.log('not my guo')
         const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(p+"/"+f).isDirectory());
         const output_dir = options['output-dir'];
         const files = dirs(output_dir);
         const name_uri = {};
+        return new Promise((resolve) => {
         files.forEach((file) => {
             shell.cd(file);
-            // shell.exec('serverless deploy');
+            shell.exec('serverless deploy');
+            console.log(file)
             shell.exec('serverless info',(code,stdout,stderr) => {
                 if(code != '0'){
                     console.log(stderr)
@@ -82,8 +93,8 @@ class Executor {
                     }
                 }
             });
-        }); 
-        return new Promise((resolve) => {resolve(name_uri)});
+        }); resolve();
+    })
     }
 
 
@@ -94,7 +105,7 @@ class Executor {
     rread.file(input_Path, (file) => {
             babel.transformFileSync(file, {
                 plugins: [
-                    [ pluginPath, { mode: 'prepare', output: localpath,uris:fnInfo}]
+                    [ pluginPath, { mode: 'prepare', output: localpath, uris:fnInfo}]
                 ],
             });
         });
