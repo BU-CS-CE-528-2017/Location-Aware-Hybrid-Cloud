@@ -10,7 +10,6 @@ const babylon = require('babylon');
 var body = '';
 
 const mkdir = bluebird.promisify(fx.mkdir);
-
 module.exports = function({types: t}) {
 
 	const isCloudFunction = (node) => {
@@ -159,6 +158,7 @@ module.exports = function({types: t}) {
 								});
 						});
 					};
+
 					mkdir(`${self.output}`).then(() => writeLambdas());
 					break;
 				case 'prepare': // No-op, at least so far

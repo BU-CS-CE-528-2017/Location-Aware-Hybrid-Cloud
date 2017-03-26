@@ -14,7 +14,7 @@ const yargOptions = {
     },
     'input-dir': {
         alias: 'i',
-        default: './',
+        default: './files',
         describe: 'Root directory containing the code to be parsed and deployed',
         demand: true,
         type: 'string'
@@ -30,7 +30,7 @@ const yargOptions = {
 
 const options = require('yargs')
   .options(yargOptions)
-  .example('$0 --mode live --input-dir . --output-dir ./', 'Extracts the cloud annotated functions of the current directory, deploys them to AWS and prepares the local files')
+  .example('$0 --mode live --input-dir ./files --output-dir ./cloud', 'Extracts the cloud annotated functions of the current directory, deploys them to AWS and prepares the local files')
   .wrap(null)
   .help()
   .argv
