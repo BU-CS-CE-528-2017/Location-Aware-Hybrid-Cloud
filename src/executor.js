@@ -54,16 +54,14 @@ class Executor {
     // Runs the plugin in extract mode creating a folder per AWS
     // lambda that needs to be deployed
     extractCloud(options) {
-       const inputPath = path.resolve(options['input-dir']);
-       return readdir(inputPath, (err,file) => {
-        file.forEach((doc) => {
-            doc = `${inputPath}/${doc}`
-           babel.transformFileSync(doc, {
-               plugins: [
-                   [ pluginPath, { mode: 'extract', output: options['output-dir'] } ]
-               ],
-           });
-       });
+        const inputPath = path.resolve(options['input-dir']);
+        return rread(inputPath, (file) => {
+            file.forEach((doc) => {
+                doc = `${inputPath}/${doc}`;
+                babel.transformFileSync(doc, {
+                    plugins: [ [ pluginPath, { mode: 'extract', output: options['output-dir'] } ] ],
+                });
+            });
        });
    }
     // Runs the serverless tool in each folder created in the extractCloud

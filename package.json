@@ -41,7 +41,7 @@
   },
   "scripts": {
     "build": "babel src --out-dir dist",
-    "test": "tape dist/**/test*.js",
+    "test": "tape src/**/test*.js",
     "index": "node dist/index.js",
     "deploy": "sh ./deploy.sh && sh ./local.sh",
     "local": "node dist/test/scratch/local.js"

@@ -2,7 +2,7 @@ const test = require('tape');
 const Executor = require('../executor');
 const options = {
 	mode: 'test',
-	'input-dir': './fixtures',
+	'input-dir': './test/fixtures',
 	'output-dir': './testcloud'
 }
 
