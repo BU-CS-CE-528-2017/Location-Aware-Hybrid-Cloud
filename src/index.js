@@ -14,7 +14,7 @@ const yargOptions = {
     },
     'input-dir': {
         alias: 'i',
-        default: './files',
+        default: './src/files',
         describe: 'Root directory containing the code to be parsed and deployed',
         demand: true,
         type: 'string'
