@@ -1,0 +1,19 @@
+service: fetch-file-and-store-in-s3
+
+frameworkVersion: ">=1.1.0"
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  stage: dev
+  region: us-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
+functions:
+  fetch:
+    handler: handler.fetch
+    
