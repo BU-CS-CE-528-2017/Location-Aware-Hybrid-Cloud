@@ -1,9 +1,10 @@
 'use strict';
 
-var AWS = require('aws-sdk');
-var s3 = new AWS.S3();
+
 
 module.exports.fetch = (event, context, callback) => {
+  var AWS = require('aws-sdk');
+  var s3 = new AWS.S3();
   s3.getObject(
     { Bucket: "ec512-demo2", Key: "Google-Rvenue.txt" },
     function (error, data) {
