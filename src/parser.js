@@ -86,6 +86,14 @@ module.exports = function({types: t}) {
 		return data;
 	}
 
+	// visitor used to replace the returned reqeust to callback function. 
+	const return_visitor ={
+	ReturnStatement(path){
+  	const value = path.node.argument.arguments[0].name;
+    path.replaceWithSourceString(`callback(null,${value})`);
+		}
+    }
+
     return {
 		pre(state) {
 			// Holds the content of the functions annotated with @cloud
@@ -107,6 +115,7 @@ module.exports = function({types: t}) {
 					switch(this.mode) {
 						case 'extract':
 							console.log(`[Extract] - Function "${name}" is annotated with @cloud. Removing from AST`);
+							path.traverse(return_visitor);
 							const decorated = decorateAsLambda(path.node);
 							if (this.lambdas[name]) {
 								// TODO We should probably include the filename in the name, that
