@@ -19,5 +19,5 @@ iamRoleStatements:
         - s3:*
       Resource: "*"
 ```
-* Fetch text data Google Annual Revenue and calculate average
-* Display on local function
+* Cloud function will Fetch text data Google Annual Revenue and calculate average
+* Local Function: Display on local function*
