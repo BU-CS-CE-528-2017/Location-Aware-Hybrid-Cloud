@@ -72,39 +72,51 @@ class Executor {
     // Runs the serverless tool in each folder created in the extractCloud
     // step. Returns a map containing function names and URIs
     deployCloud(options) {
-        console.log('not my guo')
-        const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(p+"/"+f).isDirectory());
-        const output_dir = options['output-dir'];
-        const files = dirs(output_dir);
+        const outputPath = path.resolve(options['output-dir']);
+        // console.log(outputPath)
+        // const dirs = p => readdir(p).filter(f => fs.stat(p+"/"+f).isDirectory());
+        // const files = dirs(outputPath);
+        // console.log(files)
         const name_uri = {};
-        return new Promise((resolve) => {
-            files.forEach((file) => {
+        const test_files = ['./cloud/calcPrimes']
+        const deploy_promises = test_files.map((file) =>{
+              console.log(`deploying the ${file}`)
+              shell.cd(file);
+              console.log(`${__dirname}/`)
+              shell.exec('serverless deploy');
+              shell.cd(localpath)
+              return Promise.resolve();
+        });
+      Promise.all(deploy_promises).then(() =>{
+            console.log(`getting the serverless information`)
+            const info_promises = files.map((file) =>{
                 shell.cd(file);
-                shell.exec('serverless deploy');
-                console.log(file)
                 shell.exec('serverless info',(code,stdout,stderr) => {
-                    if(code != '0'){
-                        console.log(stderr)
-                    }else{
-                        const info = stdout.toString().split("\n");
-                        for(var i = 0; i < info.length; i++) {
-                            if(info[i] == 'endpoints:'){
-                                const endpoints = info[i + 1];
-                                var uri = endpoints.slice(9,-1);
-                                name_uri[file] = uri;
-                            }
+                if(code != '0'){
+                    console.log(stderr)
+                }else{
+                    const info = stdout.toString().split("\n");
+                    for(var i = 0; i < info.length; i++) {
+                        if(info[i] == 'endpoints:'){
+                            const endpoints = info[i + 1];
+                            var uri = endpoints.slice(9,-1);
+                            name_uri[file] = uri;
                         }
                     }
-                });
-            }); 
-            resolve();
-        });
+                }
+        })
+                shell.cd(localpath);
+                return Promise.resolve();
+            })
+            return Promise.all(info_promises);
+        })
+      return Promise.resolve(name_uri)
     }
 
 
     // Runs the plugin in prepare mode passing as argument the URIs of the
     // previously deployed functions
-    prepareLocal(options,fnInfo) {
+    prepareLocal(options) {
         if (!fnInfo) {
             fnInfo = {};
         }
