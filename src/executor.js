@@ -26,14 +26,10 @@ class Executor {
                 case 'prepare-local':
                     this.prepareLocal(options);
                     break;
-                case 'test':
-                    this.extractCloud(options);
-                    this.deployCloud(options);
-                    break;
                 case 'live':
                     this.extractCloud(options)
-                        .then(() => this.deployCloud(options))
-                        .then((fnInfo) => this.prepareLocal(options));
+                        .then(() => this.deployCloud(options)).then((fnInfo) => 
+                        this.prepareLocal(options));
                     break;
                 default:
                     throw new Error(`Unrecognized mode ${options.mode}`);
@@ -73,7 +69,7 @@ class Executor {
     // Runs the serverless tool in each folder created in the extractCloud
     // step. Returns a map containing function names and URIs
     deployCloud(options) {
-        setTimeout(function(){
+      return new Promise((resolve,reject)=> setTimeout(() =>{
         const outputPath = path.resolve(options['output-dir']);
         const name_uri = {};
         const getUri = (stdout) => { 
@@ -86,29 +82,33 @@ class Executor {
                 }
             }
         }  
-        const test_files = ['./cloud/calcPrimes'] 
-        const promises = test_files.map((file) => {
+        const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(p+"/"+f).isDirectory())
+        const files = dirs(outputPath);
+        for(var i=0, l=files.length; i<l; i++){
+            files[i] = outputPath +'/' +files[i];
+        }
+        const promises = files.map((file) => {
                 console.log(`deploying the ${file}`)
                 shell.cd(file);
-                shell.exec('serverless deploy',{async:true},(code,stdout,stderr) => {
-                const child = shell.exec('serverless info',{async:true},(code,stdout,stderr) =>{
-                    name_uri[file] = getUri(stdout);
-                    shell.cd(localpath)
-                    }); 
-                });
-                return Promise.resolve(name_uri);
+                return new Promise((resolve,reject) => shell.exec('serverless deploy',(code,stdout,stderr) => {
+                name_uri[file] = getUri(stdout);
+                shell.cd(localpath)
+                resolve();
+            })
+                )
         });
-        return Promise.all(promises);
-    },5000);
-    }
+        // console.log(promises)
+        Promise.all(promises).then(()=>resolve(name_uri))
+    },4000)
+    )}
 
     // Runs the plugin in prepare mode passing as argument the URIs of the
     // previously deployed functions
     prepareLocal(options) {
-        if (!fnInfo) {
-            fnInfo = {};
-        }
-        console.log('f===================')
+        // if (!fnInfo) {
+        //     fnInfo = {};
+        // }
+        console.log('now prepareLocal')
         console.log(fnInfo)
         const input_Path = path.resolve(options['input-dir']);
         rread.file(input_Path, (file) => {
