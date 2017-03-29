@@ -7,7 +7,7 @@ const yargOptions = {
     mode: {
         alias: 'm',
         describe: 'Mode in which to run the CLI',
-        default: 'live',
+        default: 'extract-cloud',
         demand: true,
         choices: ['extract-cloud', 'deploy-cloud', 'prepare-local', 'live'],
         type: 'string'
