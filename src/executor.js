@@ -28,8 +28,8 @@ class Executor {
                     break;
                 case 'live':
                     this.extractCloud(options)
-                        .then(() => this.deployCloud(options)).then((fnInfo) => 
-                        this.prepareLocal(options));
+                        .then(() => this.deployCloud(options))
+                        .then((fnInfo) => this.prepareLocal(options, fnInfo));
                     break;
                 default:
                     throw new Error(`Unrecognized mode ${options.mode}`);
@@ -61,7 +61,7 @@ class Executor {
             babel.transformFileSync(file, {
                 plugins: [ [ pluginPath, { mode: 'extract', output: options['output-dir'] } ] ],
             });
-                return Promise.resolve();
+            return Promise.resolve();
         });
         return Promise.all(promises);
     }
@@ -69,42 +69,49 @@ class Executor {
     // Runs the serverless tool in each folder created in the extractCloud
     // step. Returns a map containing function names and URIs
     deployCloud(options) {
-      return new Promise((resolve,reject)=> setTimeout(() =>{
-        const outputPath = path.resolve(options['output-dir']);
-        const name_uri = {};
-        const getUri = (stdout) => { 
-            const info = stdout.toString().split("\n");
-            for(var i = 0; i < info.length; i++) {
-                if(info[i] == 'endpoints:'){
-                    const endpoints = info[i + 1];
-                    var uri = endpoints.slice(9,-1);
-                    return uri;
+        return new Promise((resolve,reject) => {
+            setTimeout(() => {
+
+                const outputPath = path.resolve(options['output-dir']);
+                const name_uri = {};
+                const getUri = (stdout) => {
+                    const info = stdout.toString().split("\n");
+                    for (var i = 0; i < info.length; i++) {
+                        if (info[i] == 'endpoints:') {
+                            const endpoints = info[i + 1];
+                            var uri = endpoints.slice(9,-1);
+                            return uri;
+                        }
+                    }
                 }
-            }
-        }  
-        const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(p+"/"+f).isDirectory())
-        const files = dirs(outputPath);
-        for(var i=0, l=files.length; i<l; i++){
-            files[i] = outputPath +'/' +files[i];
-        }
-        const promises = files.map((file) => {
-                console.log(`deploying the ${file}`)
-                shell.cd(file);
-                return new Promise((resolve,reject) => shell.exec('serverless deploy',(code,stdout,stderr) => {
-                name_uri[file] = getUri(stdout);
-                shell.cd(localpath)
-                resolve();
-            })
-                )
+
+                const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(p + '/' + f).isDirectory())
+                let fnFolders = dirs(outputPath);
+                fnFolders = fnFolders.map((f) => outputPath + '/' + f);
+
+                const promises = fnFolders.map((folder) => {
+                    console.log(`Deploying from ${folder}`);
+                    return new Promise((resolve,reject) => {
+                        shell.exec(`cd ${folder} && serverless deploy`, (code, stdout, stderr) => {
+                            const parts = folder.split('/');
+                            name_uri[parts[parts.length - 1]] = getUri(stdout);
+                            resolve();
+                        });
+                    });
+                });
+
+                Promise.all(promises).then(() => {
+                    console.log(`Done deploying, collected: ${JSON.stringify(name_uri)}`);
+                    resolve(name_uri);
+                });
+
+            }, 4000);
         });
-        // console.log(promises)
-        Promise.all(promises).then(()=>resolve(name_uri))
-    },4000)
-    )}
+    }
 
     // Runs the plugin in prepare mode passing as argument the URIs of the
     // previously deployed functions
-    prepareLocal(options) {
+    prepareLocal(options, fnInfo) {
         // if (!fnInfo) {
         //     fnInfo = {};
         // }
@@ -112,11 +119,13 @@ class Executor {
         console.log(fnInfo)
         const input_Path = path.resolve(options['input-dir']);
         rread.file(input_Path, (file) => {
-            babel.transformFileSync(file, {
+            const transformed = babel.transformFileSync(file, {
                 plugins: [
-                    [ pluginPath, { mode: 'prepare', output: localpath, uris:fnInfo}]
+                    [ pluginPath, { mode: 'prepare', output: localpath, uris: fnInfo }]
                 ],
             });
+            // TODO Replace this
+            console.log(transformed.code);
         });
     }
 
