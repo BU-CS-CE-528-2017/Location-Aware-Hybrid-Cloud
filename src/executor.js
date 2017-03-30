@@ -1,5 +1,6 @@
 const bluebird = require('bluebird');
 const babel = require('babel-core');
+const beautifier = require('js-beautify').js;
 const fs = require('fs');
 const fx = require('mkdir-recursive');
 const rread = require('readdir-recursive');
@@ -79,7 +80,7 @@ class Executor {
                     for (var i = 0; i < info.length; i++) {
                         if (info[i] == 'endpoints:') {
                             const endpoints = info[i + 1];
-                            var uri = endpoints.slice(9,-1);
+                            var uri = endpoints.slice(9,endpoints.length);
                             return uri;
                         }
                     }
@@ -118,15 +119,17 @@ class Executor {
         console.log('now prepareLocal')
         console.log(fnInfo)
         const input_Path = path.resolve(options['input-dir']);
-        rread.file(input_Path, (file) => {
+        const promise = rread.file(input_Path, (file) => {
             const transformed = babel.transformFileSync(file, {
                 plugins: [
                     [ pluginPath, { mode: 'prepare', output: localpath, uris: fnInfo }]
                 ],
             });
+            fs.writeFileSync(`${input_Path}/local.js`, beautifier(transformed.code))
             // TODO Replace this
-            console.log(transformed.code);
+            // console.log(transformed.code);
         });
+        // promise.then((transformed) =>fs.writeFileSync(`${input_Path}/local.js`, beautifier(transformed.code)));
     }
 
 }

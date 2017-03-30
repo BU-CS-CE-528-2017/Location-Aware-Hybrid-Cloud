@@ -32,9 +32,14 @@ module.exports = function({types: t}) {
 		const fnArgs = _.map(node.params, (param) => param.name);
 
 		_.forEach(fnArgs, (arg) => {
-			const actualVar = t.variableDeclarator(t.identifier(arg), t.identifier(`event.${arg}`));
-			const declaration = t.variableDeclaration('var', [actualVar]);
+			const parseObj = t.variableDeclarator(t.identifier(`parsed_${arg}`),t.identifier(`JSON.parse(event.body)`));
+			const actualVar = t.variableDeclarator(t.identifier(arg), t.identifier(`parsed_${arg}.${arg}`));
+			const declaration_obj =	t.variableDeclaration('var',[parseObj]);
+			const declaration = t.variableDeclaration('var',[actualVar]);
 			node.body.body.unshift(declaration);
+			node.body.body.unshift(declaration_obj);
+			// const actualVar = t.variableDeclarator(t.identifier(arg), t.identifier(`event.${arg}`));
+			// const declaration = t.variableDeclaration('var', [actualVar]);
 		});
 
 		const functionName = node.id.name;
@@ -49,8 +54,7 @@ module.exports = function({types: t}) {
 	const decorateAsFnInvocation = (node, uri) => {
 
 		const fnArgs = _.map(node.params, (param) => param.name);
-		const body = `{ ${_.map(fnArgs, (arg) => `"${arg}": ${arg}`).join(',')} }`;
-
+		const body = `{ ${_.map(fnArgs, (arg) => `"${arg}": JSON.stringify(${arg})`).join(',')} }`;
 		const decorated = `
 		function ${node.id.name}(${fnArgs.join(',')}) {
 			const rp = require('request-promise');
@@ -61,7 +65,7 @@ module.exports = function({types: t}) {
 				json: true
 			};
 			return rp(options).then(function(response) {
-				console.log(response);
+				// console.log(response);
 				return response;
 			}).catch(function(error) {
 				console.log(error);
@@ -90,7 +94,7 @@ module.exports = function({types: t}) {
 	const return_visitor ={
 	ReturnStatement(path){
   	const value = path.node.argument.arguments[0].name;
-    path.replaceWithSourceString(`callback(null,${value})`);
+    path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
 		}
     }
 
