@@ -25,5 +25,5 @@ function display(l) {
       console.log(l[i]);
    }
 }
-obj = {n : 200};
+var obj = {n : 200};
 const l = calcPrimes(obj).then((primes) => display(primes));

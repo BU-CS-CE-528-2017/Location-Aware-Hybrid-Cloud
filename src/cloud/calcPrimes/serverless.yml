@@ -1,0 +1,11 @@
+service: myService
+provider:
+  name: aws
+  runtime: nodejs4.3
+functions:
+  name:
+    handler: calcPrimes.calcPrimes
+    events:
+      - http:
+          path: calcPrimes
+          method: POST

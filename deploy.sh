@@ -1,6 +1,6 @@
 babel src --out-dir dist
 tape dist/**/testIndex.js
-cd dist/test/scratch/aws/
+cd dist/cloud/
 ls > ../dirc.txt
 for i in $(cat ../dirc.txt)
 do

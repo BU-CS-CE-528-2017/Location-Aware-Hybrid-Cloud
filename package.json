@@ -42,7 +42,7 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "tape src/**/test*.js",
-    "index": "node dist/index.js",
+    "index": "cd dist && node index.js",
     "deploy": "sh ./deploy.sh && sh ./local.sh",
     "local": "node dist/test/scratch/local.js"
   },
@@ -50,7 +50,7 @@
     "type": "git",
     "url": "git+https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud.git"
   },
-  "author": "Aaron_Gu",
+  "author": "John Keisling",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/issues"

@@ -8,7 +8,7 @@ function calcPrimes(obj) {
       n = 100;
     }
     var sieve = [], i, j, primes = [];
-    for (i = 2; i <= n; ++i) {
+    for (var i = 2; i <= n; ++i) {
         if (!sieve[i]) {
             // i has not been marked -- it is prime
             primes.push(i);
@@ -25,5 +25,8 @@ function display(l) {
       console.log(l[i]);
    }
 }
+<<<<<<< HEAD
 const obj = {n : 200};
+=======
+>>>>>>> 29f3ed736358bf7e92f2665854a56dbcd7410378
 const l = calcPrimes(obj).then((primes) => display(primes));
