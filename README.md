@@ -16,6 +16,8 @@ This project would be used by companies and research teams that have multiple
 applications or computational modules in different clouds. Examples include investment banks, hedge funds, or tech companies driven by concerns for safety, privacy, or amount of computation.
 A simple demo program:<br><br>
 
+## Project Setup
+
 * Step 1: "npm run build" ( genereate es5, node.js compatible file). <br />
 * Step 2: set the parameter input directory and output directory in the index.js <br />
 * Step 3: "node index.js" to run the babel plugin and generate cloud function. <br>
