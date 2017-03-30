@@ -42,7 +42,7 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "tape src/**/test*.js",
-    "index": "node dist/index.js",
+    "index": "cd dist && node index.js",
     "deploy": "sh ./deploy.sh && sh ./local.sh",
     "local": "node dist/test/scratch/local.js"
   },
