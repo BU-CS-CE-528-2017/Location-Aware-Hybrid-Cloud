@@ -54,7 +54,7 @@ module.exports = function({types: t}) {
 	const decorateAsFnInvocation = (node, uri) => {
 
 		const fnArgs = _.map(node.params, (param) => param.name);
-		const body = `{ ${_.map(fnArgs, (arg) => `"${arg}": JSON.stringify(${arg})`).join(',')} }`;
+		const body = `{ ${_.map(fnArgs, (arg) => `"${arg}": ${arg}`).join(',')} }`;
 		const decorated = `
 		function ${node.id.name}(${fnArgs.join(',')}) {
 			const rp = require('request-promise');
@@ -78,7 +78,7 @@ module.exports = function({types: t}) {
 
 	const createServerlessDeployment = (name) => {
 		const data = yaml.dump({ 
-			service: 'myService',
+			service: `my${name}`,
 			provider: { name: 'aws', runtime: 'nodejs4.3' },
 			functions: { 
 				name: { 

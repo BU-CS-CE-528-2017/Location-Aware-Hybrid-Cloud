@@ -1,3 +1,9 @@
+function display(l) {
+   for (var i = 0; i < l.length; i++) {
+      console.log(l[i]);
+   }
+}
+
 /* @cloud */
 function calcPrimes(obj) {
     var n = obj.n
@@ -8,7 +14,7 @@ function calcPrimes(obj) {
       n = 100;
     }
     var sieve = [], i, j, primes = [];
-    for (i = 2; i <= n; ++i) {
+    for (var i = 2; i <= n; ++i) {
         if (!sieve[i]) {
             // i has not been marked -- it is prime
             primes.push(i);
@@ -20,10 +26,21 @@ function calcPrimes(obj) {
     return Promise.resolve(primes);
 }
 
-function display(l) {
-   for (var i = 0; i < l.length; i++) {
-      console.log(l[i]);
-   }
+/* @cloud */
+function addone(obj2){
+  var n = obj2.n
+  var numbers = [];
+  for (var i = 1; i <= n; i++){
+    numbers.push(i);
+  }
+  return Promise.resolve(numbers);
 }
+
+
+
+
+
 const obj = {n : 200};
-const l = calcPrimes(obj).then((primes) => display(primes));
+const obj2 = {n: 100};
+const l = calcPrimes(obj).then((primes) => display(primes))
+const k = addone(obj2).then((numbers) => display(numbers))
