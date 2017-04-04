@@ -25,12 +25,13 @@ A simple demo program:<br><br>
 ## Project Structure:
 ![Alt text](https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/blob/master/system_architecture.png "System Architecture")
 
-* The executore has four modes:
+* The executor has four modes:
 1. **extract-cloud**: to extract cloud function from customer js file, and build a serverless.yml file for each function.
 2. **deploy-cloud**: to deploy the extracted cloud function on to AWS Lambda through serverless
 3. **prepare-local**: it will get back the uri of cloud function from AWS and generate a local.js file with request to AWS.
 4. **live**: run through all the above command in one mode
 **Finally**, run "node local.js" to execute the functions.
+
 ### Setting up babel environment:
 1. Install node
 2. Create package.json https://docs.npmjs.com/getting-started/using-a-package.json
