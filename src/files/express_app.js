@@ -8,22 +8,25 @@ function getRevenue(obj) {
   console.log("fetch from" +  bucket);
 
   var nums = []
-  s3.getObject(
-    { Bucket: bucket, Key: key },
-    function (error, data) {
-      console.log("fetching...");
-      if (error != null) {
-        console.log(error);
-      } else {
-        let objectData = data.Body.toString('utf-8');
-        var list = objectData.split('\n');
-        for(var i = 0; i < list.length; i++){
-          nums.push(parseFloat(list[i]));
+  return new Promise(function(resolve, reject) {
+    s3.getObject(
+      { Bucket: bucket, Key: key },
+      function (error, data) {
+        console.log("fetching...");
+        if (error != null) {
+          console.log(error);
+          reject(err);
+          return;
+        } else {
+          let objectData = data.Body.toString('utf-8');
+          var list = objectData.split('\n');
+          for(var i = 0; i < list.length; i++){
+            nums.push(parseFloat(list[i]));
+          }
+          resolve(nums);
         }
-        console.log(nums);
-      }
-    })
-  return Promise.resolve(nums);
+      });
+  });
 }
 
 /* @cloud AWS */
