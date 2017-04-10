@@ -102,7 +102,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/mycalcPrimes/dev/1491326123072-2017-04-04T17:15:23.072Z/mycalcPrimes.zip"
+          "S3Key": "serverless/mycalcPrimes/dev/1491611526979-2017-04-08T00:32:06.979Z/mycalcPrimes.zip"
         },
         "FunctionName": "mycalcPrimes-dev-name",
         "Handler": "calcPrimes.calcPrimes",
@@ -121,14 +121,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "NameLambdaVersionYTbkHKMm9ik2b86ZF1qX3LP68sjDgfFkkqua8COr0": {
+    "NameLambdaVersionTHPYag27qQGHOC8xBA3wRXI97cbhV8N77vDOYq5ZGok": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "NameLambdaFunction"
         },
-        "CodeSha256": "YTbkHKMm9ik2/b86ZF1qX3LP68sjD/gfFkkqua8COr0="
+        "CodeSha256": "THPYag27qQGHOC8xBA3wRXI97cbhV8N77vDOYq5ZGok="
       }
     },
     "ApiGatewayRestApi": {
@@ -190,7 +190,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1491326123086": {
+    "ApiGatewayDeployment1491611526992": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -245,7 +245,7 @@
     "NameLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "NameLambdaVersionYTbkHKMm9ik2b86ZF1qX3LP68sjDgfFkkqua8COr0"
+        "Ref": "NameLambdaVersionTHPYag27qQGHOC8xBA3wRXI97cbhV8N77vDOYq5ZGok"
       }
     },
     "ServiceEndpoint": {

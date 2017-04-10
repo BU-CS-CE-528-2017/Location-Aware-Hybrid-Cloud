@@ -29,7 +29,7 @@
           "Fn::Join": [
             "-",
             [
-              "myaddone",
+              "mygetRevenue",
               "dev",
               "us-east-1",
               "lambdaRole"
@@ -49,7 +49,7 @@
             "-",
             [
               "dev",
-              "myaddone",
+              "mygetRevenue",
               "lambda"
             ]
           ]
@@ -92,7 +92,7 @@
     "NameLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/myaddone-dev-name"
+        "LogGroupName": "/aws/lambda/mygetRevenue-dev-name"
       }
     },
     "NameLambdaFunction": {
@@ -102,10 +102,10 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/myaddone/dev/1491611526978-2017-04-08T00:32:06.978Z/myaddone.zip"
+          "S3Key": "serverless/mygetRevenue/dev/1491611568879-2017-04-08T00:32:48.879Z/mygetRevenue.zip"
         },
-        "FunctionName": "myaddone-dev-name",
-        "Handler": "addone.addone",
+        "FunctionName": "mygetRevenue-dev-name",
+        "Handler": "getRevenue.getRevenue",
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
@@ -121,23 +121,23 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "NameLambdaVersionNDjzKQ1nKS15zBDjgslKDUDtMZKvXU2FqRfaE3IuhE": {
+    "NameLambdaVersionNSwmNpc7tlVVCcc9ct7pekBLP1geak17TGkZqVtZ6E": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "NameLambdaFunction"
         },
-        "CodeSha256": "NDjzKQ1nKS15z/BDjgslKDUDtMZKvXU2FqRfaE3IuhE="
+        "CodeSha256": "NSwmNpc7tlVVCcc9ct7pekBLP1geak17T+GkZqVtZ6E="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-myaddone"
+        "Name": "dev-mygetRevenue"
       }
     },
-    "ApiGatewayResourceAddone": {
+    "ApiGatewayResourceGetrevenue": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
@@ -146,19 +146,19 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "addone",
+        "PathPart": "getRevenue",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
       }
     },
-    "ApiGatewayMethodAddonePost": {
+    "ApiGatewayMethodGetrevenuePost": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "POST",
         "RequestParameters": {},
         "ResourceId": {
-          "Ref": "ApiGatewayResourceAddone"
+          "Ref": "ApiGatewayResourceGetrevenue"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -190,7 +190,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1491611526993": {
+    "ApiGatewayDeployment1491611568893": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -199,7 +199,7 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodAddonePost"
+        "ApiGatewayMethodGetrevenuePost"
       ]
     },
     "NameLambdaPermissionApiGateway": {
@@ -245,7 +245,7 @@
     "NameLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "NameLambdaVersionNDjzKQ1nKS15zBDjgslKDUDtMZKvXU2FqRfaE3IuhE"
+        "Ref": "NameLambdaVersionNSwmNpc7tlVVCcc9ct7pekBLP1geak17TGkZqVtZ6E"
       }
     },
     "ServiceEndpoint": {

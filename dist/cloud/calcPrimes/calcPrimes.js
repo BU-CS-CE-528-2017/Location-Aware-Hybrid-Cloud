@@ -1,16 +1,8 @@
-'use strict;'
-module.exports.calcPrimes = function(event, context, callback)
+'use strict';
+'use strict;';
 
-
-
-
-
-
-
-
-{
-    var parsed_obj = JSON.parse(event.body);
-    var obj = parsed_obj.obj;
+module.exports.calcPrimes = function (event, context, callback) {
+    var obj = event.obj;
     var n = obj.n;
     if (n > 0) {
         // pass
@@ -30,9 +22,5 @@ module.exports.calcPrimes = function(event, context, callback)
             }
         }
     }
-    callback(null, {
-        "statusCode": 200,
-        "body": JSON.stringify(primes)
-    });
-
-}
+    callback(null, primes);
+};

@@ -1,0 +1,11 @@
+service: mygetRevenue
+provider:
+  name: aws
+  runtime: nodejs4.3
+functions:
+  name:
+    handler: getRevenue.getRevenue
+    events:
+      - http:
+          path: getRevenue
+          method: POST

@@ -29,7 +29,7 @@
           "Fn::Join": [
             "-",
             [
-              "myaddone",
+              "myaverage",
               "dev",
               "us-east-1",
               "lambdaRole"
@@ -49,7 +49,7 @@
             "-",
             [
               "dev",
-              "myaddone",
+              "myaverage",
               "lambda"
             ]
           ]
@@ -92,7 +92,7 @@
     "NameLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/myaddone-dev-name"
+        "LogGroupName": "/aws/lambda/myaverage-dev-name"
       }
     },
     "NameLambdaFunction": {
@@ -102,10 +102,10 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/myaddone/dev/1491611526978-2017-04-08T00:32:06.978Z/myaddone.zip"
+          "S3Key": "serverless/myaverage/dev/1491611563883-2017-04-08T00:32:43.883Z/myaverage.zip"
         },
-        "FunctionName": "myaddone-dev-name",
-        "Handler": "addone.addone",
+        "FunctionName": "myaverage-dev-name",
+        "Handler": "average.average",
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
@@ -121,23 +121,23 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "NameLambdaVersionNDjzKQ1nKS15zBDjgslKDUDtMZKvXU2FqRfaE3IuhE": {
+    "NameLambdaVersion5mnuoXGDu1wgrS6IdR4KfR50BVC3bqH6Pao1ld5kEg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "NameLambdaFunction"
         },
-        "CodeSha256": "NDjzKQ1nKS15z/BDjgslKDUDtMZKvXU2FqRfaE3IuhE="
+        "CodeSha256": "5mnuoXGDu1wgrS6IdR4KfR50BVC3bqH6P/ao1ld5kEg="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-myaddone"
+        "Name": "dev-myaverage"
       }
     },
-    "ApiGatewayResourceAddone": {
+    "ApiGatewayResourceAverage": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
@@ -146,19 +146,19 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "addone",
+        "PathPart": "average",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
       }
     },
-    "ApiGatewayMethodAddonePost": {
+    "ApiGatewayMethodAveragePost": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "POST",
         "RequestParameters": {},
         "ResourceId": {
-          "Ref": "ApiGatewayResourceAddone"
+          "Ref": "ApiGatewayResourceAverage"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -190,7 +190,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1491611526993": {
+    "ApiGatewayDeployment1491611563895": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -199,7 +199,7 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodAddonePost"
+        "ApiGatewayMethodAveragePost"
       ]
     },
     "NameLambdaPermissionApiGateway": {
@@ -245,7 +245,7 @@
     "NameLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "NameLambdaVersionNDjzKQ1nKS15zBDjgslKDUDtMZKvXU2FqRfaE3IuhE"
+        "Ref": "NameLambdaVersion5mnuoXGDu1wgrS6IdR4KfR50BVC3bqH6Pao1ld5kEg"
       }
     },
     "ServiceEndpoint": {
