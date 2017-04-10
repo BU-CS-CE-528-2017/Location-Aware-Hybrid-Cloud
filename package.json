@@ -1,12 +1,12 @@
 {
-  "name": "plugin",
+  "name": "location-aware-hybrid-cloud",
   "version": "1.0.0",
   "babel": {
     "presets": [
       "es2015"
     ]
   },
-  "description": "a babel plugin for sprint 2",
+  "description": "babel plugin for hybrid local and cloud deployment",
   "main": "index.js",
   "dependencies": {
     "babel-cli": "^6.24.0",
@@ -44,7 +44,8 @@
     "test": "tape src/**/test*.js",
     "index": "cd dist && node index.js",
     "deploy": "sh ./deploy.sh && sh ./local.sh",
-    "local": "node dist/test/scratch/local.js"
+    "local": "cd dist/files && node local.js",
+    "live" : "cd dist && node index.js --mode live"
   },
   "repository": {
     "type": "git",
