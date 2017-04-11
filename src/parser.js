@@ -13,9 +13,9 @@ const mkdir = bluebird.promisify(fx.mkdir);
 module.exports = function({types: t}) {
 
 	const isCloudFunction = (node) => {
-		const comments = _.map(node.leadingComments, (comment) => comment.value)
+		const comments = _.map(node.leadingComments, (comment) => comment.value);
 		return _.some(comments, (comment) => comment.match(/@cloud/));
-	}
+	};
 
 	// Takes a node from the AST and converts it to
 	// its string representation
@@ -25,7 +25,7 @@ module.exports = function({types: t}) {
 		};
 		const source = generate.default(node, options);
 		return source.code;
-	}
+	};
 
 	// Wraps a node as an AWS lambda function
 	const decorateAsLambda = (node) => {
@@ -47,9 +47,8 @@ module.exports = function({types: t}) {
 			'use strict;'
 			module.exports.${functionName} = function(event, context, callback)${astToSourceString(node.body)}
 		`;
-		return lambda
-		
-	}
+		return lambda;
+	};
 
 	const decorateAsFnInvocation = (node, uri) => {
 
@@ -71,10 +70,10 @@ module.exports = function({types: t}) {
 				console.log(error);
 				throw error;
 			});
-		}`
+		}`;
 
 		return decorated;
-	}
+	};
 
 	const createServerlessDeployment = (name) => {
 		const data = yaml.dump({ 
@@ -88,17 +87,17 @@ module.exports = function({types: t}) {
 			} 
 		});
 		return data;
-	}
+	};
 
 	// visitor used to replace the returned reqeust to callback function. 
-	const return_visitor ={
-	ReturnStatement(path){
-  	const value = path.node.argument.arguments[0].name;
-    path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
+	const return_visitor = {
+		ReturnStatement(path){
+			const value = path.node.argument.arguments[0].name;
+			path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
 		}
-    }
+	};
 
-    return {
+	return {
 		pre(state) {
 			// Holds the content of the functions annotated with @cloud
 			this.lambdas = {};
@@ -107,17 +106,17 @@ module.exports = function({types: t}) {
 			this.uris = {};
 		},
 
-        visitor: {
-            FunctionDeclaration(path, state) {
+		visitor: {
+			FunctionDeclaration(path, state) {
 				if (isCloudFunction(path.node)) {
 
 					this.mode = state.opts.mode;
-					this.output = state.opts.output
+					this.output = state.opts.output;
 					this.uris = state.opts.uris;
 					const name = path.node.id.name;
 
 					switch(this.mode) {
-						case 'extract':
+						case 'extract': {
 							console.log(`[Extract] - Function "${name}" is annotated with @cloud. Removing from AST`);
 							path.traverse(return_visitor);
 							const decorated = decorateAsLambda(path.node);
@@ -129,27 +128,27 @@ module.exports = function({types: t}) {
 							this.lambdas[name] = decorated;
 							path.remove();
 							break;
-						case 'prepare':
+						}
+						case 'prepare': {
 							console.log(`[Prepare] - Function "${name}" is annotated with @cloud. Replacing implementation by function invocation`);
 							const decoratedLocal = decorateAsFnInvocation(path.node, this.uris[name]);
 							const ast = babylon.parse(decoratedLocal);
 							path.replaceWith(ast);
 							break;
-						default:
+						}
+						default: {
 							throw Error(`Unrecognized mode ${mode}. Valid options are ["extract", "prepare"]`);
+						}
 					}
-
-
 				}
-
-            }
-        },
+			}
+		},
 		post(state) {
 
 			const self = this;
 
 			switch(self.mode) {
-				case 'extract':
+				case 'extract': {
 					if (!self.output) {
 						// TODO Do additional checks here. Must exists or we can 
 						// create it, must be RW, etc
@@ -174,13 +173,17 @@ module.exports = function({types: t}) {
 
 					mkdir(`${self.output}`).then(() => writeLambdas());
 					break;
-				case 'prepare': // No-op, at least so far
+				}
+				case 'prepare': { 
+					// No-op, at least so far
 					break;		
-				default:
+				}
+				default: {
 					if (_.keys(self.lambdas).length > 0) {
 						throw Error(`Unrecognized mode [${self.mode}]. Valid options are ["extract", "prepare"]`);
 					}
+				}
 			}
 		}
-    }
-}
+	};
+};

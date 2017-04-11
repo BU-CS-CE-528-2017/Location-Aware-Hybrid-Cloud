@@ -24,6 +24,7 @@ test('staging', (t) => {
                 t.end();
             });
         } else {
+            // cloud folder already exists check
             t.pass('Scratch dir already exists');
             t.end();
         }
