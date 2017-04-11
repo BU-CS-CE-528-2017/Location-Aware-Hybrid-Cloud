@@ -49,6 +49,7 @@
     "deploy": "sh ./deploy.sh && sh ./local.sh",
     "local": "cd dist/files && node local.js",
     "live": "cd dist && node index.js --mode live",
+    "lahc": "npm run build && npm run live && npm run local",
     "lint": "./node_modules/.bin/eslint **/*.js"
   },
   "repository": {

@@ -1,0 +1,11 @@
+service: myaddone
+provider:
+  name: aws
+  runtime: nodejs4.3
+functions:
+  name:
+    handler: addone.addone
+    events:
+      - http:
+          path: addone
+          method: POST
