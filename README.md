@@ -17,9 +17,10 @@ A simple demo program:<br><br>
 
 ## Project Setup
 
-* Step 1: "npm run build" ( genereate es5, node.js compatible file). <br />
-* Step 2: change to dist directry and run "node index.js --mode live" <br />
-* Step 3: "node files/local.js" to run the app. <br>
+* Step 1: "npm install" (install node module dependencies) <br />
+* Step 2: "npm run build" ( genereate es5, node.js compatible file) <br />
+* Step 3: change to dist directry and run "node index.js --mode live" <br />
+* Step 4: "node files/local.js" to run the app <br>
 <br><br>
 
 ## Project Structure:
