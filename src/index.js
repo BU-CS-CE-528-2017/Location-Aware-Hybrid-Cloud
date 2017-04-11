@@ -1,4 +1,4 @@
-//const parser = require('./parser');
+const parser = require('./parser');
 const Executor = require('./executor');
 //const yargonaut = require('yargonaut').style('blue');
  
@@ -28,11 +28,11 @@ const yargOptions = {
 };
 
 const options = require('yargs')
-	.options(yargOptions)
-	.example('$0 --mode live --input-dir ./files --output-dir ./cloud', 'Extracts the cloud annotated functions of the current directory, deploys them to AWS and prepares the local files')
-	.wrap(null)
-	.help()
-	.argv;
+  .options(yargOptions)
+  .example('$0 --mode live --input-dir ./files --output-dir ./cloud', 'Extracts the cloud annotated functions of the current directory, deploys them to AWS and prepares the local files')
+  .wrap(null)
+  .help()
+  .argv;
 
 const executor = new Executor();
 executor.run(options);

@@ -10,7 +10,7 @@ const babylon = require('babylon');
 var body = '';
 
 const mkdir = bluebird.promisify(fx.mkdir);
-module.exports = function ({types: t}) {
+module.exports = function({types: t}) {
 
 	const isCloudFunction = (node) => {
 		const comments = _.map(node.leadingComments, (comment) => comment.value);
@@ -32,7 +32,7 @@ module.exports = function ({types: t}) {
 		const fnArgs = _.map(node.params, (param) => param.name);
 
 		_.forEach(fnArgs, (arg) => {
-			const parseObj = t.variableDeclarator(t.identifier('parsed_${arg}'),t.identifier('JSON.parse(event.body)'));
+			const parseObj = t.variableDeclarator(t.identifier(`parsed_${arg}`),t.identifier(`JSON.parse(event.body)`));
 			const actualVar = t.variableDeclarator(t.identifier(arg), t.identifier(`parsed_${arg}.${arg}`));
 			const declaration_obj =	t.variableDeclaration('var',[parseObj]);
 			const declaration = t.variableDeclaration('var',[actualVar]);
@@ -48,7 +48,6 @@ module.exports = function ({types: t}) {
 			module.exports.${functionName} = function(event, context, callback)${astToSourceString(node.body)}
 		`;
 		return lambda;
-		
 	};
 
 	const decorateAsFnInvocation = (node, uri) => {
@@ -91,7 +90,7 @@ module.exports = function ({types: t}) {
 	};
 
 	// visitor used to replace the returned reqeust to callback function. 
-	const return_visitor ={
+	const return_visitor = {
 		ReturnStatement(path){
 			const value = path.node.argument.arguments[0].name;
 			path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
@@ -138,11 +137,10 @@ module.exports = function ({types: t}) {
 							break;
 						}
 						default: {
-							throw Error(`Unrecognized mode ${this.mode}. Valid options are ["extract", "prepare"]`);
+							throw Error(`Unrecognized mode ${mode}. Valid options are ["extract", "prepare"]`);
 						}
 					}
 				}
-
 			}
 		},
 		post(state) {
@@ -176,13 +174,15 @@ module.exports = function ({types: t}) {
 					mkdir(`${self.output}`).then(() => writeLambdas());
 					break;
 				}
-				case 'prepare': // No-op, at least so far
+				case 'prepare': { 
+					// No-op, at least so far
 					break;		
+				}
 				default: {
 					if (_.keys(self.lambdas).length > 0) {
 						throw Error(`Unrecognized mode [${self.mode}]. Valid options are ["extract", "prepare"]`);
 					}
-				}	
+				}
 			}
 		}
 	};
