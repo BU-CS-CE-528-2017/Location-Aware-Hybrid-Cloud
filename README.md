@@ -16,14 +16,12 @@ applications or computational modules in different clouds. Examples include inve
 A simple demo program:<br><br>
 
 ## Project Setup
-
 Old Way: <br />
 * Step 1: "npm install" (install node module dependencies) <br />
 * Step 2: "npm run build" (genereate es5, node.js compatible file) <br />
 * Step 3: change to dist directry and run "node index.js --mode live" <br />
 * Step 4: "node files/local.js" to run the app <br>
 <br>
-
 New Way: <br />
 * Step 1: "npm install" (install node module dependencies) <br />
 * Step 2: "npm run lahc" (genereate es5, node.js compatible file, deploy, and run) <br />
