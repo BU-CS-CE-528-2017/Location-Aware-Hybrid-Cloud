@@ -14,7 +14,13 @@ module.exports = function({types: t}) {
 
 	const isCloudFunction = (node) => {
 		const comments = _.map(node.leadingComments, (comment) => comment.value)
-		return _.some(comments, (comment) => comment.match(/@cloud/));
+		if(_.some(comments, (comment) => comment.match(/@cloud aws/))){
+			return 'aws';
+		}else if (_.some(comments, (comment) => comment.match(/@cloud goog/))){
+			return 'goog'
+		}else{
+			return 'none'
+		}
 	}
 
 	// Takes a node from the AST and converts it to
@@ -51,6 +57,15 @@ module.exports = function({types: t}) {
 		
 	}
 
+	const decorateAsGcf = (node) => {
+		const functionName = node.id.name;
+		const gfs = `
+			'use strict;'
+			module.exports.${functionName} = function(request,response)${astToSourceString(node.body)}
+		`;
+		return gfs
+	}
+
 	const decorateAsFnInvocation = (node, uri) => {
 
 		const fnArgs = _.map(node.params, (param) => param.name);
@@ -62,6 +77,29 @@ module.exports = function({types: t}) {
 				method: 'POST',
 				uri:'${uri}',
 				body: ${body},
+				json: true
+			};
+			return rp(options).then(function(response) {
+				// console.log(response);
+				return response;
+			}).catch(function(error) {
+				console.log(error);
+				throw error;
+			});
+		}`
+
+		return decorated;
+	}
+
+	const decorateAsGoogInvocation = (node) => {
+		const uri = `https://us-central1-testgfc-164121.cloudfunctions.net/${node.id.name}`
+		const decorated = `
+		function ${node.id.name}(){
+			const rp = require('request-promise');
+			const options = {
+				method: 'POST',
+				uri:'${uri}',
+				body: {},
 				json: true
 			};
 			return rp(options).then(function(response) {
@@ -90,6 +128,19 @@ module.exports = function({types: t}) {
 		return data;
 	}
 
+	const createServerlessgoogDeployment = (name) => {
+		const data = yaml.dump({ service: 'testgcf',
+  		provider: 
+	   { name: 'google',
+	     runtime: 'nodejs',
+	     project: 'testgfc-164121',
+	     credentials: '/Users/reimari/.gcloud/testgfc-bcc6039af0aa.json' },
+	  plugins: [ 'serverless-google-cloudfunctions' ],
+	  functions: { name: { handler: `${name}`, events: [ { http: 'path' } ] } } 
+		})
+		return data;
+	}
+
 	// visitor used to replace the returned reqeust to callback function. 
 	const return_visitor ={
 	ReturnStatement(path){
@@ -98,10 +149,18 @@ module.exports = function({types: t}) {
 		}
     }
 
+    const goog_return_visitor = {
+    ReturnStatement(path){
+	  	const value = path.node.argument.arguments[0].name;
+    path.replaceWithSourceString(`response.status(200).send(${value})`);
+		}
+    }
+
     return {
 		pre(state) {
 			// Holds the content of the functions annotated with @cloud
 			this.lambdas = {};
+			this.goog = {};
 			this.mode = '';
 			this.output = '';
 			this.uris = {};
@@ -109,7 +168,8 @@ module.exports = function({types: t}) {
 
         visitor: {
             FunctionDeclaration(path, state) {
-				if (isCloudFunction(path.node)) {
+            	const platform = isCloudFunction(path.node);
+				if (platform == 'goog' || platform == 'aws'){
 
 					this.mode = state.opts.mode;
 					this.output = state.opts.output
@@ -118,22 +178,42 @@ module.exports = function({types: t}) {
 
 					switch(this.mode) {
 						case 'extract':
-							console.log(`[Extract] - Function "${name}" is annotated with @cloud. Removing from AST`);
-							path.traverse(return_visitor);
-							const decorated = decorateAsLambda(path.node);
-							if (this.lambdas[name]) {
-								// TODO We should probably include the filename in the name, that
-								// way we eliminate the chances of having duplicate functions.
-								throw Error(`Duplication function ${name}`);
+							if(platform == 'aws'){
+								console.log(`[Extract] - Function "${name}" is annotated with @cloud aws. Removing from AST`);
+								path.traverse(return_visitor);
+								const decorated = decorateAsLambda(path.node);
+								if (this.lambdas[name]) {
+									// TODO We should probably include the filename in the name, that
+									// way we eliminate the chances of having duplicate functions.
+									throw Error(`Duplication function ${name}`);
+								}
+								this.lambdas[name] = decorated;
+								path.remove();
+							}else if(platform == 'goog'){
+								console.log(`[Extract] - Function "${name}" is annotated with @cloud goog. Removing from AST`);
+								path.traverse(goog_return_visitor);
+								const decorated = decorateAsGcf(path.node);
+								if (this.goog[name]) {
+									// TODO We should probably include the filename in the name, that
+									// way we eliminate the chances of having duplicate functions.
+									throw Error(`Duplication function ${name}`);
+								}
+								this.goog[name] = decorated;
+								path.remove();
 							}
-							this.lambdas[name] = decorated;
-							path.remove();
 							break;
 						case 'prepare':
-							console.log(`[Prepare] - Function "${name}" is annotated with @cloud. Replacing implementation by function invocation`);
-							const decoratedLocal = decorateAsFnInvocation(path.node, this.uris[name]);
-							const ast = babylon.parse(decoratedLocal);
-							path.replaceWith(ast);
+							if(platform == 'aws'){
+								console.log(`[Prepare] - Function "${name}" is annotated with @cloud aws. Replacing implementation by function invocation`);
+								const decoratedLocal = decorateAsFnInvocation(path.node, this.uris[name]);
+								const ast = babylon.parse(decoratedLocal);
+								path.replaceWith(ast);
+							}else if(platform == 'goog'){
+								console.log(`[Prepare] - Function "${name}" is annotated with @cloud google. Replacing implementation by function invocation`);
+								const decoratedLocal = decorateAsGoogInvocation(path.node);
+								const ast = babylon.parse(decoratedLocal);
+								path.replaceWith(ast);
+							}
 							break;
 						default:
 							throw Error(`Unrecognized mode ${mode}. Valid options are ["extract", "prepare"]`);
@@ -172,7 +252,25 @@ module.exports = function({types: t}) {
 						});
 					};
 
-					mkdir(`${self.output}`).then(() => writeLambdas());
+					const writegoog = () => {
+						const names = _.keys(self.goog);
+						console.log(`[Extract] - Found ${names.length} annotated functions`);
+						_.forEach(names, (name) => {
+							const functionPath = `${self.output}/${name}`;
+							mkdir(functionPath)
+								.then(() => {
+									console.log(`[Extract] - Writing content and deployment info to ${functionPath}`);
+									fs.writeFileSync(`${functionPath}/index.js`, beautifier(self.goog[name]));
+									fs.writeFileSync(`${functionPath}/serverless.yml`, createServerlessgoogDeployment(name));
+								})
+								.catch((err) => {
+									console.log(err);
+								});
+						});
+					};
+					const mkdir_promise = mkdir(`${self.output}`)
+					mkdir_promise.then(() => writeLambdas());
+					mkdir_promise.then(() => writegoog());
 					break;
 				case 'prepare': // No-op, at least so far
 					break;		
