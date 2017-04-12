@@ -22,10 +22,11 @@ Old Way: <br />
 * Step 3: change to dist directry and run "node index.js --mode live" <br />
 * Step 4: "node files/local.js" to run the app <br>
 <br>
+
 New Way: <br />
 * Step 1: "npm install" (install node module dependencies) <br />
 * Step 2: "npm run lahc" (genereate es5, node.js compatible file, deploy, and run) <br />
-<br><br>
+<br>
 
 ## Project Structure:
 ![Alt text](https://github.com/BU-CS-CE-528-2017/Location-Aware-Hybrid-Cloud/blob/master/system_architecture.png "System Architecture")
