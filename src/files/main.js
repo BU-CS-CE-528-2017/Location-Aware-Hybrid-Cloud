@@ -1,3 +1,4 @@
+
 "use strict";
 
 function display(l) {
@@ -48,3 +49,4 @@ var l = getRevenue(obj).then(function (primes) {
 var k = numlist(obj2).then(function (numbers) {
     return display(numbers);
 });
+

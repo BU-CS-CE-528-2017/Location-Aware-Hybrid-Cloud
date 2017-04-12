@@ -23,6 +23,7 @@ module.exports = function({types: t}) {
 		}
 	}
 
+
 	// Takes a node from the AST and converts it to
 	// its string representation
 	const astToSourceString = (node) => {
@@ -31,7 +32,7 @@ module.exports = function({types: t}) {
 		};
 		const source = generate.default(node, options);
 		return source.code;
-	}
+	};
 
 	// Wraps a node as an AWS lambda function
 	const decorateAsLambda = (node) => {
@@ -53,9 +54,8 @@ module.exports = function({types: t}) {
 			'use strict;'
 			module.exports.${functionName} = function(event, context, callback)${astToSourceString(node.body)}
 		`;
-		return lambda
-		
-	}
+		return lambda;
+	};
 
 	const decorateAsGcf = (node) => {
 		const functionName = node.id.name;
@@ -86,10 +86,10 @@ module.exports = function({types: t}) {
 				console.log(error);
 				throw error;
 			});
-		}`
+		}`;
 
 		return decorated;
-	}
+	};
 
 	const decorateAsGoogInvocation = (node) => {
 		const uri = `https://us-central1-testgfc-164121.cloudfunctions.net/${node.id.name}`
@@ -126,7 +126,7 @@ module.exports = function({types: t}) {
 			} 
 		});
 		return data;
-	}
+	};
 
 	const createServerlessgoogDeployment = (name) => {
 		const data = yaml.dump({ service: 'testgcf',
@@ -142,12 +142,13 @@ module.exports = function({types: t}) {
 	}
 
 	// visitor used to replace the returned reqeust to callback function. 
-	const return_visitor ={
-	ReturnStatement(path){
-  	const value = path.node.argument.arguments[0].name;
-    path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
+	const return_visitor = {
+		ReturnStatement(path){
+			const value = path.node.argument.arguments[0].name;
+			path.replaceWithSourceString(`callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
 		}
-    }
+	};
+
 
     const goog_return_visitor = {
     ReturnStatement(path){
@@ -166,13 +167,14 @@ module.exports = function({types: t}) {
 			this.uris = {};
 		},
 
+
         visitor: {
             FunctionDeclaration(path, state) {
             	const platform = isCloudFunction(path.node);
 				if (platform == 'goog' || platform == 'aws'){
 
 					this.mode = state.opts.mode;
-					this.output = state.opts.output
+					this.output = state.opts.output;
 					this.uris = state.opts.uris;
 					const name = path.node.id.name;
 
@@ -214,22 +216,22 @@ module.exports = function({types: t}) {
 								const ast = babylon.parse(decoratedLocal);
 								path.replaceWith(ast);
 							}
+
 							break;
-						default:
+						
+						default: {
 							throw Error(`Unrecognized mode ${mode}. Valid options are ["extract", "prepare"]`);
+						}
 					}
-
-
 				}
-
-            }
-        },
+			}
+		},
 		post(state) {
 
 			const self = this;
 
 			switch(self.mode) {
-				case 'extract':
+				case 'extract': {
 					if (!self.output) {
 						// TODO Do additional checks here. Must exists or we can 
 						// create it, must be RW, etc
@@ -272,13 +274,17 @@ module.exports = function({types: t}) {
 					mkdir_promise.then(() => writeLambdas());
 					mkdir_promise.then(() => writegoog());
 					break;
-				case 'prepare': // No-op, at least so far
+				}
+				case 'prepare': { 
+					// No-op, at least so far
 					break;		
-				default:
+				}
+				default: {
 					if (_.keys(self.lambdas).length > 0) {
 						throw Error(`Unrecognized mode [${self.mode}]. Valid options are ["extract", "prepare"]`);
 					}
+				}
 			}
 		}
-    }
-}
+	};
+};
