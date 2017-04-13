@@ -13,15 +13,15 @@ const mkdir = bluebird.promisify(fx.mkdir);
 module.exports = function({types: t}) {
 
 	const isCloudFunction = (node) => {
-		const comments = _.map(node.leadingComments, (comment) => comment.value)
+		const comments = _.map(node.leadingComments, (comment) => comment.value);
 		if(_.some(comments, (comment) => comment.match(/@cloud aws/))){
 			return 'aws';
 		}else if (_.some(comments, (comment) => comment.match(/@cloud goog/))){
-			return 'goog'
+			return 'goog';
 		}else{
-			return 'none'
+			return 'none';
 		}
-	}
+	};
 
 
 	// Takes a node from the AST and converts it to
@@ -63,8 +63,8 @@ module.exports = function({types: t}) {
 			'use strict;'
 			module.exports.${functionName} = function(request,response)${astToSourceString(node.body)}
 		`;
-		return gfs
-	}
+		return gfs;
+	};
 
 	const decorateAsFnInvocation = (node, uri) => {
 
@@ -92,7 +92,7 @@ module.exports = function({types: t}) {
 	};
 
 	const decorateAsGoogInvocation = (node) => {
-		const uri = `https://us-central1-testgfc-164121.cloudfunctions.net/${node.id.name}`
+		const uri = `https://us-central1-testgfc-164121.cloudfunctions.net/${node.id.name}`;
 		const decorated = `
 		function ${node.id.name}(){
 			const rp = require('request-promise');
@@ -109,10 +109,10 @@ module.exports = function({types: t}) {
 				console.log(error);
 				throw error;
 			});
-		}`
+		}`;
 
 		return decorated;
-	}
+	};
 
 	const createServerlessDeployment = (name) => {
 		const data = yaml.dump({ 
@@ -130,16 +130,19 @@ module.exports = function({types: t}) {
 
 	const createServerlessgoogDeployment = (name) => {
 		const data = yaml.dump({ service: 'testgcf',
-  		provider: 
-	   { name: 'google',
-	     runtime: 'nodejs',
-	     project: 'testgfc-164121',
-	     credentials: '/Users/reimari/.gcloud/testgfc-bcc6039af0aa.json' },
-	  plugins: [ 'serverless-google-cloudfunctions' ],
-	  functions: { name: { handler: `${name}`, events: [ { http: 'path' } ] } } 
-		})
+			provider: {
+				name: 'google',
+				runtime: 'nodejs',
+				project: 'testgfc-164121',
+				credentials: '/Users/reimari/.gcloud/testgfc-bcc6039af0aa.json' 
+			},
+			plugins: [ 'serverless-google-cloudfunctions' ],
+			functions: { 
+				name: { handler: `${name}`, events: [ { http: 'path' } ] } 
+			}
+		});
 		return data;
-	}
+	};
 
 	// visitor used to replace the returned reqeust to callback function. 
 	const return_visitor = {
@@ -150,14 +153,14 @@ module.exports = function({types: t}) {
 	};
 
 
-    const goog_return_visitor = {
-    ReturnStatement(path){
-	  	const value = path.node.argument.arguments[0].name;
-    path.replaceWithSourceString(`response.status(200).send(${value})`);
+	const goog_return_visitor = {
+		ReturnStatement(path){
+			const value = path.node.argument.arguments[0].name;
+			path.replaceWithSourceString(`response.status(200).send(${value})`);
 		}
-    }
+	};
 
-    return {
+	return {
 		pre(state) {
 			// Holds the content of the functions annotated with @cloud
 			this.lambdas = {};
@@ -168,9 +171,9 @@ module.exports = function({types: t}) {
 		},
 
 
-        visitor: {
-            FunctionDeclaration(path, state) {
-            	const platform = isCloudFunction(path.node);
+		visitor: {
+			FunctionDeclaration(path, state) {
+				const platform = isCloudFunction(path.node);
 				if (platform == 'goog' || platform == 'aws'){
 
 					this.mode = state.opts.mode;
@@ -270,7 +273,7 @@ module.exports = function({types: t}) {
 								});
 						});
 					};
-					const mkdir_promise = mkdir(`${self.output}`)
+					const mkdir_promise = mkdir(`${self.output}`);
 					mkdir_promise.then(() => writeLambdas());
 					mkdir_promise.then(() => writegoog());
 					break;
