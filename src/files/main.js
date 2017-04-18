@@ -35,7 +35,7 @@ function getRevenue(obj) {
 var express = require("express");
 var app = express();
 var router = express.Router();
-var path = '/Users/star/EC528/Location-Aware-Hybrid-Cloud' + '/view/';
+var path = 'change the file locations' + '/view/'; //Change the file location as your local
 
 router.use(function (req,res,next) {
   console.log("/" + req.method);
