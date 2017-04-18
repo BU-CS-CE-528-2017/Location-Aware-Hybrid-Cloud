@@ -25,7 +25,6 @@ You need to have an AWS account and save the root access key in .aws folder. Det
   - Provider: aws
   - Args: 
     - Region: 'some region'
-    - Project: ‘someId’
     - Credentions: 'file'
 */
 ```
