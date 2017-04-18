@@ -19,6 +19,11 @@ A simple demo program:<br><br>
 Write your JS file in normal way and use ```"/* @cloud aws */"``` for cloud functions that running on AWS and ```/* @cloud gcf */``` to run on Google Cloud Function.
 
 ### For running on AWS Lambda
+You need to have an AWS account and save the root access key in .aws folder. Detail information can be see [Getting starts with AWS](http://docs.aws.amazon.com/gettingstarted/latest/awsgsg-intro/gsg-aws-intro.html).
+
+### For running on Google Cloud Function
+You need to have an Google Cloud Service account, create corresponding project first on the Google Cloud Console, and get the credential key files. More can be see at [Getting start with GCF](https://github.com/serverless/serverless-google-cloudfunctions).
+
 Old Way: <br />
 * Step 1: "npm install" (install node module dependencies) <br />
 * Step 2: "npm run build" (genereate es5, node.js compatible file) <br />
@@ -39,7 +44,7 @@ New Way: <br />
 2. **deploy-cloud**: to deploy the extracted cloud function on to AWS Lambda through serverless
 3. **prepare-local**: it will get back the uri of cloud function from AWS and generate a local.js file with request to AWS.
 4. **live**: run through all the above command in one mode
-**Finally**, run "node local.js" to execute the functions.
+**Finally**, run "node local.js" or "npm run start" to execute the functions.
 
 ### Setting up babel environment:
 1. Install node
