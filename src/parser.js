@@ -23,7 +23,6 @@ module.exports = function({types: t}) {
 		}
 	};
 
-
 	// Takes a node from the AST and converts it to
 	// its string representation
 	const astToSourceString = (node) => {
