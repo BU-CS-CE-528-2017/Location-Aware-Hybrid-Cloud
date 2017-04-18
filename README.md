@@ -16,10 +16,19 @@ applications or computational modules in different clouds. Examples include inve
 A simple demo program:<br><br>
 
 ## Project Setup
-Write your JS file in normal way and use ```/* @cloud aws */``` for cloud functions that running on AWS and ```/* @cloud gcf */``` to run on Google Cloud Function.
+Write your JS file in normal way and add comments to deploy on cloud. Detail of the comments can be found below.
 
 ### For running on AWS Lambda
 You need to have an AWS account and save the root access key in .aws folder. Detail information can be see [Getting starts with AWS](http://docs.aws.amazon.com/gettingstarted/latest/awsgsg-intro/gsg-aws-intro.html).
+```
+/* @cloud 
+  - Provider: aws
+  - Args: 
+    - Region: 'some region'
+    - Project: ‘someId’
+    - Credentions: 'file'
+*/
+```
 
 ### For running on Google Cloud Function
 You need to have an Google Cloud Service account, create corresponding project first on the Google Cloud Console, and get the credential key files. More can be see at the github project [Go through the Setup Google Cloud Part to setup before deployment.](https://github.com/serverless/serverless-google-cloudfunctions)
