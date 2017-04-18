@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EC528-Demo</title>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script>
+  function noticeAlert(rq){
+    $.post(rq).then((res)=>{
+      window.alert(res);
+    });
+  }
+</script>
+</head>
+<body>
+<div>
+<div>
+<nav class="navbar navbar-inverse" role="navigation" style="padding-left:130px;">
+       <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home<span class="sr-only">(current)</span></a></li>
+      <li><a href="/overview">Overview</a></li>
+      <li><a href="/about">About us</a></li>
+    </ul>
+</nav>
+</div>
+<br/>
+
+<div class="jumbotron text-center">
+  <h1>EC528: Location Aware Hybrid Cloud</h1>
+  <p>Welcome to our demo homepage</p> 
+  <button type="button" class="btn btn-success" onclick="noticeAlert('/aws')">Run AWS</button>
+  <button type="button" class="btn btn-success" onclick="noticeAlert('/goog')">Run GCS</button>
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3>Overview</h3>
+      <p>This project aims to build a toolkit that achieves computational locality by using Function as a Service (FaaS). </p>
+      
+    </div>
+    <div class="col-sm-4">
+      <h3>Use Cases</h3>
+      <p>This project would be used by companies and research teams that have multiple applications or computational modules in different clouds.</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>Goal</h3>        
+      <p>Reducing development lifecycle.</p>
+      <p>Enabling computational locality via FaaS.</p>
+    </div>
+  </div>
+  
+</div>
+
+</div>
+</body>
+</html>
