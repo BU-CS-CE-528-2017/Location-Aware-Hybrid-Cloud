@@ -16,7 +16,7 @@ applications or computational modules in different clouds. Examples include inve
 A simple demo program:<br><br>
 
 ## Project Setup
-Write your JS file in normal way and use "/* @cloud aws */" for cloud functions that running on AWS and /* @cloud gcf */ to run on Google Cloud Function.
+Write your JS file in normal way and use "/* @cloud aws /*/" for cloud functions that running on AWS and /* @cloud gcf /*/ to run on Google Cloud Function.
 
 ### For running on AWS Lambda
 Old Way: <br />
