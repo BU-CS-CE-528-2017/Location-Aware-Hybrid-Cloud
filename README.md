@@ -33,6 +33,16 @@ You need to have an AWS account and save the root access key in .aws folder. Det
 ### For running on Google Cloud Function
 You need to have an Google Cloud Service account, create corresponding project first on the Google Cloud Console, and get the credential key files. More can be see at the github project [Go through the Setup Google Cloud Part to setup before deployment.](https://github.com/serverless/serverless-google-cloudfunctions)
 
+```
+/* @cloud 
+  - Provider: gcf
+  - Args: 
+    - Region: 'some region'
+    - Project: ‘someId’
+    - Credentions: 'file'
+*/
+```
+
 Old Way: <br />
 * Step 1: "npm install" (install node module dependencies) <br />
 * Step 2: "npm run build" (genereate es5, node.js compatible file) <br />
