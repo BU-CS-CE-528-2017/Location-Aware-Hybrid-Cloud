@@ -1,4 +1,4 @@
-/* @cloud AWS */
+/* @cloud aws */
 function getnumber(obj) {
   var AWS = require('aws-sdk'); // AWS dependencies
   var s3 = new AWS.S3();
@@ -8,7 +8,7 @@ function getnumber(obj) {
   console.log("fetch from" +  bucket);
 
   var nums = []
- var result =  new Promise ((resolve,reject) => {
+ var result = new Promise ((resolve,reject) => {
     s3.getObject({ Bucket: bucket, Key: key }, function (error, data) {
       console.log("fetching...");
       if (error != null) {
@@ -24,10 +24,13 @@ function getnumber(obj) {
       }
     });
   });
-  return Promise.resolve(result);
+var ans = result.then(()=>{
+return nums;
+})
+return Promise.resolve(ans);
 }
 
-/* @cloud AWS */
+/* @cloud goog */
 function calcaverage(obj2){
   //Calculate Average
   var n = obj2.n
@@ -61,6 +64,13 @@ app.get('/avg', (req, res) => {
         "<br> Average is: " + avg);
     });
   });
+});
+
+app.get('/aws',(req, res) => {
+  getnumber(test).then((result) => {
+    console.log(result);
+
+  })
 });
 
 app.listen(3000, function () {

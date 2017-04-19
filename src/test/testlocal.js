@@ -14,13 +14,13 @@ const scratchDir = `${__dirname}/scratch/`;
 const generatedFiles = [];
 
 test('plugin should get local.js ', (t) => {
-    fx.mkdirSync(scratchDir);
-    var output = babel.transformFileSync(__dirname + '/fixtures/main.js', {
-        plugins: [[pluginPath, { mode: 'prepare', output: scratchDir, uris: {'calcPrimes': 'https://some.aws.com/uri'} }]]
-    });
-    t.pass('Plugin runs without crashing');
-    fs.writeFileSync(scratchDir + 'local.js', output.code);
-    fs.unlinkSync(`${scratchDir}local.js`);
-    fs.rmdirSync(scratchDir);
-    t.end();
+  fx.mkdirSync(scratchDir);
+  const output = babel.transformFileSync(`${__dirname}/fixtures/main.js`, {
+    plugins: [[pluginPath, { mode: 'prepare', output: scratchDir, uris: { calcPrimes: 'https://some.aws.com/uri' } }]],
+  });
+  t.pass('Plugin runs without crashing');
+  fs.writeFileSync(`${scratchDir}local.js`, output.code);
+  fs.unlinkSync(`${scratchDir}local.js`);
+  fs.rmdirSync(scratchDir);
+  t.end();
 });
