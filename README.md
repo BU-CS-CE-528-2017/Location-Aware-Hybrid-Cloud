@@ -1,6 +1,6 @@
 # Location-Aware-Hybrid-Cloud
 The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
-run ```npm install location-aware-hybrid-cloud --save``` to install through npm manager.<br>
+run `npm install location-aware-hybrid-cloud --save` to install through npm manager.<br>
 
 **Mentor:** *Rodrigo Manyari* <br>
 **Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
@@ -46,12 +46,12 @@ The provider is gcf as google cloud function and passing arguements includes the
 Put the JS code in src\files\main.js  <br>
 
 Old Way: <br />
-* Step 1: ```sudo npm install -g``` install node module dependencies globally <br />
-* Step 2: ```npm run build``` genereate es5, node.js compatible file. The result files are in dist folder. <br />
-* Step 4: ```npm run deploy``` to deploy the cloud functions to the clouds <br>
-* Step 5: ```npm run start``` to run the application <br>
+* Step 1: `sudo npm install -g` install node module dependencies globally <br />
+* Step 2: `npm run build` genereate es5, node.js compatible file. The result files are in dist folder. <br />
+* Step 4: `npm run deploy` to deploy the cloud functions to the clouds <br>
+* Step 5: `npm run start` to run the application <br>
 <br>
-
+---
 New Way: <br />
 * Step 1: ```sudo npm install -g``` (install node module dependencies) <br />
 * Step 2: ```npm run lahc``` (genereate es5, node.js compatible file, deploy, and run) <br />
@@ -82,7 +82,7 @@ The project has two parts with Babel transpile and serverless deployment.
 Babel transpile files are in the src folder as index.js executor.js and parser.js <br>
 1. index.js is the start of program and defines the input directory output directory and running mode.<br>
 Modify the bellow to change default setting.<br>
-Example command ```node index.js -m live -i input -d output```
+Example command `node index.js -m live -i input -d output`
 
 ```javascript
 var yargOptions = {
