@@ -1,6 +1,7 @@
 # Location-Aware-Hybrid-Cloud
 The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
-run ```npm install location-aware-hybrid-cloud --save``` to install through npm manager.
+run ```npm install location-aware-hybrid-cloud --save``` to install through npm manager.<br>
+
 **Mentor:** *Rodrigo Manyari* <br>
 **Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
 
