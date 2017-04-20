@@ -44,15 +44,15 @@ The provider is gcf as google cloud function and passing arguements includes the
 ### How to run the project
 Put the JS code in src\files\main.js ```sudo npm install -g```
 Old Way: <br />
-* Step 1: "sudo npm install -g" (install node module dependencies globally) <br />
-* Step 2: "npm run build" (genereate es5, node.js compatible file. The result files are in dist folder.) <br />
-* Step 4: "npm run deploy" to deploy the cloud functions to the clouds <br>
-* Step 5: "npm run start" to run the application <br>
+* Step 1: ```sudo npm install -g``` install node module dependencies globally <br />
+* Step 2: ```npm run build``` genereate es5, node.js compatible file. The result files are in dist folder. <br />
+* Step 4: ```npm run deploy``` to deploy the cloud functions to the clouds <br>
+* Step 5: ```npm run start``` to run the application <br>
 <br>
 
 New Way: <br />
-* Step 1: "sudo npm install -g" (install node module dependencies) <br />
-* Step 2: "npm run lahc" (genereate es5, node.js compatible file, deploy, and run) <br />
+* Step 1: ```sudo npm install -g``` (install node module dependencies) <br />
+* Step 2: ```npm run lahc``` (genereate es5, node.js compatible file, deploy, and run) <br />
 <br>
 
 ## Project Structure:
