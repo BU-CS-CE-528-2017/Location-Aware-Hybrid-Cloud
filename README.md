@@ -1,6 +1,6 @@
 # Location-Aware-Hybrid-Cloud
 The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
-
+run ```npm install location-aware-hybrid-cloud --save``` to install through npm manager.
 **Mentor:** *Rodrigo Manyari* <br>
 **Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
 
@@ -19,26 +19,26 @@ A simple demo program:<br><br>
 Write your JS file in normal way and add comments to deploy on cloud. Detail of the comments can be found below.
 
 ### For running on AWS Lambda
-You need to have an AWS account and save the root access key in .aws folder. Detail information can be see [Getting starts with AWS](http://docs.aws.amazon.com/gettingstarted/latest/awsgsg-intro/gsg-aws-intro.html).
+You need to have an AWS account and save the root access key in .aws folder. Detail information can be see [Getting starts with AWS](http://docs.aws.amazon.com/gettingstarted/latest/awsgsg-intro/gsg-aws-intro.html).<br>
+The provider is aws and only augrement supported now is regions to be deployed in aws.
 ```
 /* @cloud 
   - Provider: aws
   - Args: 
     - Region: 'some region'
-    - Credentions: 'file'
 */
 ```
 
 ### For running on Google Cloud Function
 You need to have an Google Cloud Service account, create corresponding project first on the Google Cloud Console, and get the credential key files. More can be see at the github project [Go through the Setup Google Cloud Part to setup before deployment.](https://github.com/serverless/serverless-google-cloudfunctions)
-
+The provider is gcf as google cloud function and passing arguements includes the region that is supposed to deploy, projectId which is created in google cloud console and path for the credential key file.
 ```
 /* @cloud 
   - Provider: gcf
   - Args: 
     - Region: 'some region'
     - Project: ‘someId’
-    - Credentions: 'file'
+    - Credential: 'file'
 */
 ```
 ### How to run the project
@@ -51,7 +51,7 @@ Old Way: <br />
 <br>
 
 New Way: <br />
-* Step 1: "npm install" (install node module dependencies) <br />
+* Step 1: "sudo npm install -g" (install node module dependencies) <br />
 * Step 2: "npm run lahc" (genereate es5, node.js compatible file, deploy, and run) <br />
 <br>
 
