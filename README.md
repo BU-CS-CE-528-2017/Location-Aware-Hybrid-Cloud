@@ -43,7 +43,8 @@ The provider is gcf as google cloud function and passing arguements includes the
 */
 ```
 ### How to run the project
-Put the JS code in src\files\main.js ```sudo npm install -g```
+Put the JS code in src\files\main.js  <br>
+
 Old Way: <br />
 * Step 1: ```sudo npm install -g``` install node module dependencies globally <br />
 * Step 2: ```npm run build``` genereate es5, node.js compatible file. The result files are in dist folder. <br />
