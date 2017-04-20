@@ -51,7 +51,9 @@ Old Way: <br />
 * Step 4: `npm run deploy` to deploy the cloud functions to the clouds <br>
 * Step 5: `npm run start` to run the application <br>
 <br>
----
+
+***
+
 New Way: <br />
 * Step 1: ```sudo npm install -g``` (install node module dependencies) <br />
 * Step 2: ```npm run lahc``` (genereate es5, node.js compatible file, deploy, and run) <br />
