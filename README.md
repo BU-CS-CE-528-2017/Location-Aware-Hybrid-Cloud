@@ -80,7 +80,7 @@ The project has two parts with Babel transpile and serverless deployment.
 Babel transpile files are in the src folder as index.js executor.js and parser.js <br>
 1. index.js is the start of program and defines the input directory output directory and running mode.<br>
 Modify the bellow to change default setting.<br>
-Example command ```node index.js -m live -i ./input -d ./output```
+Example command ```node index.js -m live -i input -d output```
 
 ```javascript
 var yargOptions = {
