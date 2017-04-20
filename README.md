@@ -1,5 +1,5 @@
 # Location-Aware-Hybrid-Cloud
-EC528 Cloud Computing Project Location Aware Hybrid Cloud
+The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
 
 **Mentor:** *Rodrigo Manyari* <br>
 **Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
@@ -41,11 +41,12 @@ You need to have an Google Cloud Service account, create corresponding project f
     - Credentions: 'file'
 */
 ```
-
+### How to run the project
+Put the JS code in src\files\main.js ```sudo npm install -g```
 Old Way: <br />
-* Step 1: "npm install" (install node module dependencies) <br />
-* Step 2: "npm run build" (genereate es5, node.js compatible file) <br />
-* Step 4: "npm run deploy" to deploy the cloud function to clouds <br>
+* Step 1: "sudo npm install -g" (install node module dependencies globally) <br />
+* Step 2: "npm run build" (genereate es5, node.js compatible file. The result files are in dist folder.) <br />
+* Step 4: "npm run deploy" to deploy the cloud functions to the clouds <br>
 * Step 5: "npm run start" to run the application <br>
 <br>
 
@@ -73,4 +74,40 @@ https://github.com/bradtraversy/youtube_es2015_source/tree/master/01_babel
   
 4. $ cd src
 5. $ npm run build
-  
+
+## How to contribute
+The project has two parts with Babel transpile and serverless deployment. 
+Babel transpile files are in the src folder as index.js executor.js and parser.js <br>
+1. index.js is the start of program and defines the input directory output directory and running mode.
+```javascript
+var yargOptions = {
+	mode: {
+		alias: 'm',
+		describe: 'Mode in which to run the CLI',
+		default: 'extract-cloud',
+		demand: true,
+		choices: ['extract-cloud', 'deploy-cloud', 'prepare-local', 'live'],
+		type: 'string'
+	},
+	'input-dir': {
+		alias: 'i',
+		default: './files',
+		describe: 'Root directory containing the code to be parsed and deployed',
+		demand: true,
+		type: 'string'
+	},
+	'output-dir': {
+		alias: 'd',
+		default: './cloud',
+		describe: 'Target directory where the CLI outputs all the runnable files',
+		demand: true,
+		type: 'string'
+	}
+};
+```
+2. executor.js defines all the modes and execution of different modes
+  * extract cloud will execute the parser.js and extract cloud function to dist/cloud/ folder. Each cloud function has its own folder function.js and serverless.yml file. All the setting of serverless.yml can be accessed there. 
+  * deploy cloud will deploy all the functions to there cloud respectively. 
+  * prepare local will get back the deployment url and prepare the local.js file in dist/files. local.js is file with http request to the cloud provider for cloud functions. 
+ 
+3. parser.js is the acctural execution of Babel. Only AWS and GCF are supported now. 
