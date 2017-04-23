@@ -150,7 +150,10 @@ module.exports = function({ types: t }) {
     ReturnStatement(path) {
       const return_type = path.node.argument.type;
       if(return_type == "CallExpression"){
-      const value = path.node.argument.arguments[0].name;
+          const backvalue = path.node.argument.arguments[0];
+          console.log(backvalue)
+          const value = astToSourceString(backvalue);
+          // const value = path.node.argument.arguments[0].name;
       path.replaceWithSourceString(
         `callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`
       );
