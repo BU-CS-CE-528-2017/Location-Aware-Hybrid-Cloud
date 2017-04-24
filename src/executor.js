@@ -138,6 +138,7 @@ class Executor {
     console.log(fnInfo);
     const input_Path = path.resolve(options["input-dir"]);
     const promise = rread.file(input_Path, file => {
+      console.log(file)
       const transformed = babel.transformFileSync(file, {
         plugins: [
           [pluginPath, { mode: "prepare", output: localpath, uris: fnInfo }]

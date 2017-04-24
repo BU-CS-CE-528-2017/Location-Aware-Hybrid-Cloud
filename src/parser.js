@@ -11,15 +11,29 @@ const body = "";
 
 const mkdir = bluebird.promisify(fx.mkdir);
 module.exports = function({ types: t }) {
-  const isCloudFunction = node => {
+
+  const GetCloudService = node => {
+    const parameters = {};
     const comments = _.map(node.leadingComments, comment => comment.value);
-    if (_.some(comments, comment => comment.match(/@cloud aws/))) {
-      return "aws";
-    } else if (_.some(comments, comment => comment.match(/@cloud goog/))) {
-      return "goog";
-    }
-    return "none";
-  };
+    if(comments.length > 0){
+    var commentslist = comments[0].split('\n');
+    if (_.some(comments, comment => comment.match(/@cloud/))) {
+        commentslist.forEach((line)=>{
+        const wordlist = line.split(':');
+        if(wordlist.length >= 2){
+          const word_key = wordlist[0].trim();
+          const word_value = wordlist[1].trim();
+          parameters[word_key] = word_value;
+      }
+    })
+      return parameters;
+  }else{
+    return null;
+  }
+  }else{
+    return null;
+  }
+};
 
   // Takes a node from the AST and converts it to
   // its string representation
@@ -61,6 +75,24 @@ module.exports = function({ types: t }) {
   };
 
   const decorateAsGcf = node => {
+      const fnArgs = _.map(node.params, param => param.name);
+
+      _.forEach(fnArgs, arg => {
+      const parseObj = t.variableDeclarator(
+        t.identifier(`parsed_${arg}`),
+        t.identifier("request.body")
+      );
+      const actualVar = t.variableDeclarator(
+        t.identifier(arg),
+        t.identifier(`parsed_${arg}.${arg}`)
+      );
+      const declaration_obj = t.variableDeclaration("var", [parseObj]);
+      const declaration = t.variableDeclaration("var", [actualVar]);
+      node.body.body.unshift(declaration);
+      node.body.body.unshift(declaration_obj);
+      // const actualVar = t.variableDeclarator(t.identifier(arg), t.identifier(`event.${arg}`));
+      // const declaration = t.variableDeclaration('var', [actualVar]);
+    });
     const functionName = node.id.name;
     const gfs = `
       'use strict;'
@@ -89,19 +121,27 @@ module.exports = function({ types: t }) {
         throw error;
       });
     }`;
-
+    console.log('not my guo')
     return decorated;
   };
 
-  const decorateAsGoogInvocation = node => {
-    const uri = `https://us-central1-testgfc-164121.cloudfunctions.net/${node.id.name}`;
+  const decorateAsGoogInvocation = (node,platform) => {
+    const project_name = platform['Project'];
+    const Credentions_path = platform['Credentions']
+    var Region_name = 'us-central1';
+    if('Region' in platform){
+      Region_name = platform['Region'];
+    }
+    const uri = `https://${Region_name}-${project_name}.cloudfunctions.net/${node.id.name}`;
+    const fnArgs = _.map(node.params, param => param.name);
+    const body = `{ ${_.map(fnArgs, arg => `"${arg}": ${arg}`).join(",")} }`;
     const decorated = `
-    function ${node.id.name}(){
+    function ${node.id.name}(${fnArgs.join(",")}){
       const rp = require('request-promise');
       const options = {
         method: 'POST',
         uri:'${uri}',
-        body: {},
+        body: ${body},
         json: true
       };
       return rp(options).then(function(response) {
@@ -130,14 +170,20 @@ module.exports = function({ types: t }) {
     return data;
   };
 
-  const createServerlessgoogDeployment = name => {
+  const createServerlessgoogDeployment = (name, platform) => {
+    const project_name = platform['Project'];
+    const Credentions_path = platform['Credentions']
+    var Region_name = 'us-central1';
+    if('Region' in platform){
+      Region_name = platform['Region'];
+    }
     const data = yaml.dump({
       service: "testgcf",
       provider: {
         name: "google",
         runtime: "nodejs",
-        project: "testgfc-164121",
-        credentials: "/Users/reimari/.gcloud/testgfc-bcc6039af0aa.json"
+        project: `${project_name}`,
+        credentials: `${Credentions_path}`
       },
       plugins: ["serverless-google-cloudfunctions"],
       functions: { name: { handler: `${name}`, events: [{ http: "path" }] } }
@@ -150,21 +196,31 @@ module.exports = function({ types: t }) {
     ReturnStatement(path) {
       const return_type = path.node.argument.type;
       if(return_type == "CallExpression"){
+        if(this.platform['S3'] != 'true'){
           const backvalue = path.node.argument.arguments[0];
-          console.log(backvalue)
           const value = astToSourceString(backvalue);
-          // const value = path.node.argument.arguments[0].name;
-      path.replaceWithSourceString(
-        `callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`
-      );
+          path.replaceWithSourceString(
+          `callback(null,{"statusCode": 200,"body":JSON.stringify(${value})})`);
+        }else{
+          const backvalue = path.node.argument.arguments[0];
+          const value = astToSourceString(backvalue);
+          path.replaceWithSourceString(
+          `${value}.then((ans) =>{
+            callback(null,{"statusCode": 200,"body":JSON.stringify(ans)})
+          })`);
+        }
     }
     }
   };
 
   const goog_return_visitor = {
     ReturnStatement(path) {
-      const value = path.node.argument.arguments[0].name;
-      path.replaceWithSourceString(`response.status(200).send(${value})`);
+      const return_type = path.node.argument.type;
+      if(return_type == "CallExpression"){
+          const backvalue = path.node.argument.arguments[0];
+          const value = astToSourceString(backvalue);
+          path.replaceWithSourceString(`response.status(200).send(${value})`);
+      }
     }
   };
 
@@ -176,12 +232,14 @@ module.exports = function({ types: t }) {
       this.mode = "";
       this.output = "";
       this.uris = {};
+      this.platform = {};
     },
 
     visitor: {
       FunctionDeclaration(path, state) {
-        const platform = isCloudFunction(path.node);
-        if (platform == "goog" || platform == "aws") {
+        this.platform = GetCloudService(path.node);
+        const platform = this.platform;
+        if (platform) {
           this.mode = state.opts.mode;
           this.output = state.opts.output;
           this.uris = state.opts.uris;
@@ -189,11 +247,11 @@ module.exports = function({ types: t }) {
 
           switch (this.mode) {
             case "extract":
-              if (platform == "aws") {
+              if (this.platform['Provider'] == "aws") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud aws. Removing from AST`
                 );
-                path.traverse(return_visitor);
+                path.traverse(return_visitor,{platform});
                 const decorated = decorateAsLambda(path.node);
                 if (this.lambdas[name]) {
                   // TODO We should probably include the filename in the name, that
@@ -202,7 +260,7 @@ module.exports = function({ types: t }) {
                 }
                 this.lambdas[name] = decorated;
                 path.remove();
-              } else if (platform == "goog") {
+              } else if (this.platform['Provider'] == "goog") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud goog. Removing from AST`
                 );
@@ -218,7 +276,7 @@ module.exports = function({ types: t }) {
               }
               break;
             case "prepare":
-              if (platform == "aws") {
+              if (platform['Provider'] == "aws") {
                 console.log(
                   `[Prepare] - Function "${name}" is annotated with @cloud aws. Replacing implementation by function invocation`
                 );
@@ -228,11 +286,11 @@ module.exports = function({ types: t }) {
                 );
                 const ast = babylon.parse(decoratedLocal);
                 path.replaceWith(ast);
-              } else if (platform == "goog") {
+              } else if (platform['Provider'] == "goog") {
                 console.log(
                   `[Prepare] - Function "${name}" is annotated with @cloud google. Replacing implementation by function invocation`
                 );
-                const decoratedLocal = decorateAsGoogInvocation(path.node);
+                const decoratedLocal = decorateAsGoogInvocation(path.node, platform);
                 const ast = babylon.parse(decoratedLocal);
                 path.replaceWith(ast);
               }
@@ -303,7 +361,7 @@ module.exports = function({ types: t }) {
                   );
                   fs.writeFileSync(
                     `${functionPath}/serverless.yml`,
-                    createServerlessgoogDeployment(name)
+                    createServerlessgoogDeployment(name,self.platform)
                   );
                 })
                 .catch(err => {
