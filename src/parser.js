@@ -23,7 +23,7 @@ module.exports = function({ types: t }) {
         if(wordlist.length >= 2){
           const word_key = wordlist[0].trim();
           const word_value = wordlist[1].trim();
-          parameters[word_key] = word_value;
+          parameters[word_key.toLowerCase()] = word_value;
       }
     })
       return parameters;
@@ -121,16 +121,15 @@ module.exports = function({ types: t }) {
         throw error;
       });
     }`;
-    console.log('not my guo')
     return decorated;
   };
 
   const decorateAsGoogInvocation = (node,platform) => {
-    const project_name = platform['Project'];
-    const Credentions_path = platform['Credentions']
+    const project_name = platform['project'];
+    const Credentions_path = platform['credentions']
     var Region_name = 'us-central1';
-    if('Region' in platform){
-      Region_name = platform['Region'];
+    if('region' in platform){
+      Region_name = platform['region'];
     }
     const uri = `https://${Region_name}-${project_name}.cloudfunctions.net/${node.id.name}`;
     const fnArgs = _.map(node.params, param => param.name);
@@ -158,8 +157,8 @@ module.exports = function({ types: t }) {
 
   const createServerlessDeployment = (name,platform) => {
     var Region_name = 'us-east-1';
-    if('Region' in platform){
-      Region_name = platform['Region'];
+    if('region' in platform){
+      Region_name = platform['region'];
     }
     const data = yaml.dump({
       service: `my${name}`,
@@ -175,11 +174,11 @@ module.exports = function({ types: t }) {
   };
 
   const createServerlessgoogDeployment = (name, platform) => {
-    const project_name = platform['Project'];
+    const project_name = platform['project'];
     const Credentions_path = platform['Credentions']
     var Region_name = 'us-central1';
-    if('Region' in platform){
-      Region_name = platform['Region'];
+    if('region' in platform){
+      Region_name = platform['region'];
     }
     const data = yaml.dump({
       service: "testgcf",
@@ -200,7 +199,7 @@ module.exports = function({ types: t }) {
     ReturnStatement(path) {
       const return_type = path.node.argument.type;
       if(return_type == "CallExpression"){
-        if(this.platform['S3'] != 'true'){
+        if(this.platform['s3'] != 'true'){
           const backvalue = path.node.argument.arguments[0];
           const value = astToSourceString(backvalue);
           path.replaceWithSourceString(
@@ -252,7 +251,7 @@ module.exports = function({ types: t }) {
           const platform = this.platform[name];
           switch (this.mode) {
             case "extract":
-              if (platform['Provider'] == "aws") {
+              if (platform['provider'] == "aws") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud aws. Removing from AST`
                 );
@@ -265,7 +264,7 @@ module.exports = function({ types: t }) {
                 }
                 this.lambdas[name] = decorated;
                 path.remove();
-              } else if (platform['Provider'] == "goog") {
+              } else if (platform['provider'] == "goog") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud goog. Removing from AST`
                 );
@@ -281,7 +280,7 @@ module.exports = function({ types: t }) {
               }
               break;
             case "prepare":
-              if (platform['Provider'] == "aws") {
+              if (platform['provider'] == "aws") {
                 console.log(
                   `[Prepare] - Function "${name}" is annotated with @cloud aws. Replacing implementation by function invocation`
                 );
@@ -291,7 +290,7 @@ module.exports = function({ types: t }) {
                 );
                 const ast = babylon.parse(decoratedLocal);
                 path.replaceWith(ast);
-              } else if (platform['Provider'] == "goog") {
+              } else if (platform['provider'] == "goog") {
                 console.log(
                   `[Prepare] - Function "${name}" is annotated with @cloud google. Replacing implementation by function invocation`
                 );
