@@ -156,10 +156,14 @@ module.exports = function({ types: t }) {
     return decorated;
   };
 
-  const createServerlessDeployment = name => {
+  const createServerlessDeployment = (name,platform) => {
+    var Region_name = 'us-east-1';
+    if('Region' in platform){
+      Region_name = platform['Region'];
+    }
     const data = yaml.dump({
       service: `my${name}`,
-      provider: { name: "aws", runtime: "nodejs4.3" },
+      provider: { name: "aws", runtime: "nodejs4.3", region:`${Region_name}`},
       functions: {
         name: {
           handler: `${name}.${name}`,
@@ -233,21 +237,22 @@ module.exports = function({ types: t }) {
       this.output = "";
       this.uris = {};
       this.platform = {};
+      this.name = "";
     },
 
     visitor: {
       FunctionDeclaration(path, state) {
-        this.platform = GetCloudService(path.node);
-        const platform = this.platform;
-        if (platform) {
+        const name = path.node.id.name;
+        this.platform[name] = GetCloudService(path.node);
+        if (this.platform[name]) {
           this.mode = state.opts.mode;
           this.output = state.opts.output;
           this.uris = state.opts.uris;
-          const name = path.node.id.name;
-
+          this.name = name;
+          const platform = this.platform[name];
           switch (this.mode) {
             case "extract":
-              if (this.platform['Provider'] == "aws") {
+              if (platform['Provider'] == "aws") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud aws. Removing from AST`
                 );
@@ -260,7 +265,7 @@ module.exports = function({ types: t }) {
                 }
                 this.lambdas[name] = decorated;
                 path.remove();
-              } else if (this.platform['Provider'] == "goog") {
+              } else if (platform['Provider'] == "goog") {
                 console.log(
                   `[Extract] - Function "${name}" is annotated with @cloud goog. Removing from AST`
                 );
@@ -308,7 +313,7 @@ module.exports = function({ types: t }) {
     },
     post(state) {
       const self = this;
-
+      const platform = self.platform;
       switch (self.mode) {
         case "extract": {
           if (!self.output) {
@@ -334,7 +339,7 @@ module.exports = function({ types: t }) {
                   );
                   fs.writeFileSync(
                     `${functionPath}/serverless.yml`,
-                    createServerlessDeployment(name)
+                    createServerlessDeployment(name,platform[name])
                   );
                 })
                 .catch(err => {
@@ -361,7 +366,7 @@ module.exports = function({ types: t }) {
                   );
                   fs.writeFileSync(
                     `${functionPath}/serverless.yml`,
-                    createServerlessgoogDeployment(name,self.platform)
+                    createServerlessgoogDeployment(name,platform[name])
                   );
                 })
                 .catch(err => {

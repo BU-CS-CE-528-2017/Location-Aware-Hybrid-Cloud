@@ -1,6 +1,7 @@
 /* @cloud 
 Provider:aws
 S3:true
+Region: us-east-2
 */
 function getnumber(obj) {
   var AWS = require('aws-sdk'); // AWS dependencies
@@ -40,12 +41,7 @@ Credentions: /Users/reimari/.gcloud/testgfc-bcc6039af0aa.json
 function getRevenue(obj2){
   //Calculate Average
   var n = obj2.n;
-  var total = 0, arg = 0;
-  for (var i = 0; i < n.length; i++){
-    total += n[i];
-  }
-  arg = total / n.length;
-  return Promise.resolve(arg);
+  return Promise.resolve(n);
 }
 
 var aws = {
