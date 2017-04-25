@@ -1,5 +1,6 @@
 # Location-Aware-Hybrid-Cloud
-EC528 Cloud Computing Project Location Aware Hybrid Cloud
+The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
+run `npm install location-aware-hybrid-cloud --save` to install through npm manager.<br>
 
 **Mentor:** *Rodrigo Manyari* <br>
 **Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
@@ -16,16 +17,46 @@ applications or computational modules in different clouds. Examples include inve
 A simple demo program:<br><br>
 
 ## Project Setup
+Write your JS file in normal way and add comments to deploy on cloud. Detail of the comments can be found below.
+
+### For running on AWS Lambda
+You need to have an AWS account and save the root access key in .aws folder. Detail information can be see [Getting starts with AWS](http://docs.aws.amazon.com/gettingstarted/latest/awsgsg-intro/gsg-aws-intro.html).<br>
+The provider is aws and only augrement supported now is regions to be deployed in aws.
+```
+/* @cloud 
+  - Provider: aws
+  - Args: 
+    - Region: 'some region'
+*/
+```
+
+### For running on Google Cloud Function
+You need to have an Google Cloud Service account, create corresponding project first on the Google Cloud Console, and get the credential key files. More can be see at the github project [Go through the Setup Google Cloud Part to setup before deployment.](https://github.com/serverless/serverless-google-cloudfunctions)
+The provider is gcf as google cloud function and passing arguements includes the region that is supposed to deploy, projectId which is created in google cloud console and path for the credential key file.
+```
+/* @cloud 
+  - Provider: gcf
+  - Args: 
+    - Region: 'some region'
+    - Project: ‘someId’
+    - Credential: 'file'
+*/
+```
+### How to run the project
+Put the JS code in src\files\main.js  <br>
+
 Old Way: <br />
-* Step 1: "npm install" (install node module dependencies) <br />
-* Step 2: "npm run build" (genereate es5, node.js compatible file) <br />
-* Step 3: change to dist directry and run "node index.js --mode live" <br />
-* Step 4: "node files/local.js" to run the app <br>
+* Step 1: `sudo npm install -g` install node module dependencies globally <br />
+* Step 2: `npm run build` genereate es5, node.js compatible file. The result files are in dist folder. <br />
+* Step 4: `npm run deploy` to deploy the cloud functions to the clouds <br>
+* Step 5: `npm run start` to run the application <br>
 <br>
 
+***
+
 New Way: <br />
-* Step 1: "npm install" (install node module dependencies) <br />
-* Step 2: "npm run lahc" (genereate es5, node.js compatible file, deploy, and run) <br />
+* Step 1: ```sudo npm install -g``` (install node module dependencies) <br />
+* Step 2: ```npm run lahc``` (genereate es5, node.js compatible file, deploy, and run) <br />
 <br>
 
 ## Project Structure:
@@ -36,7 +67,7 @@ New Way: <br />
 2. **deploy-cloud**: to deploy the extracted cloud function on to AWS Lambda through serverless
 3. **prepare-local**: it will get back the uri of cloud function from AWS and generate a local.js file with request to AWS.
 4. **live**: run through all the above command in one mode
-**Finally**, run "node local.js" to execute the functions.
+**Finally**, run "node local.js" or "npm run start" to execute the functions.
 
 ### Setting up babel environment:
 1. Install node
@@ -47,4 +78,46 @@ https://github.com/bradtraversy/youtube_es2015_source/tree/master/01_babel
   
 4. $ cd src
 5. $ npm run build
-  
+
+## How to contribute
+The project has two parts with Babel transpile and serverless deployment. 
+Babel transpile files are in the src folder as index.js executor.js and parser.js <br>
+1. index.js is the start of program and defines the input directory output directory and running mode.<br>
+Modify the bellow to change default setting.<br>
+Example command `node index.js -m live -i input -d output`
+
+```javascript
+var yargOptions = {
+	mode: {
+		alias: 'm',
+		describe: 'Mode in which to run the CLI',
+		default: 'extract-cloud',
+		demand: true,
+		choices: ['extract-cloud', 'deploy-cloud', 'prepare-local', 'live'],
+		type: 'string'
+	},
+	'input-dir': {
+		alias: 'i',
+		default: './files',
+		describe: 'Root directory containing the code to be parsed and deployed',
+		demand: true,
+		type: 'string'
+	},
+	'output-dir': {
+		alias: 'd',
+		default: './cloud',
+		describe: 'Target directory where the CLI outputs all the runnable files',
+		demand: true,
+		type: 'string'
+	}
+};
+```
+2. executor.js defines all the modes and execution of different modes
+  * extract cloud will execute the parser.js and extract cloud function to dist/cloud/ folder. Each cloud function has its own folder function.js and serverless.yml file. All the setting of serverless.yml can be accessed there. 
+  * deploy cloud will deploy all the functions to there cloud respectively. 
+  * prepare local will get back the deployment url and prepare the local.js file in dist/files. local.js is file with http request to the cloud provider for cloud functions. 
+ 
+3. parser.js is the acctural execution of Babel. Only AWS and GCF are supported now. 
+
+### Example Express JS file
+The src/main.js shows an example expressjs app with webpage in view folder. Update the local file path in main.js in order to run the applicaion. The application has two cloud function. One is deployed and runs on AWS Lambda, the other runs on Google Cloud Function. Click the button to see the result from each cloud function. 

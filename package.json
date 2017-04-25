@@ -9,8 +9,8 @@
   "description": "babel plugin for hybrid local and cloud deployment",
   "main": "index.js",
   "dependencies": {
-    "serverless-google-cloudfunctions": "^1.0.0",
-    "express": "^4.15.2",
+    "@google-cloud/storage": "^1.1.0",
+    "aws-sdk": "^2.7.9",
     "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
     "babel-generator": "^6.24.0",
@@ -20,6 +20,7 @@
     "babel-types": "^6.23.0",
     "babylon": "^6.16.1",
     "bluebird": "^3.5.0",
+    "express": "^4.15.2",
     "glob": "^7.1.1",
     "js-beautify": "1.6.11",
     "js-yaml": "^3.8.2",
@@ -30,13 +31,12 @@
     "request-promise": "^4.1.1",
     "require-resolve": "0.0.2",
     "rmdir": "1.2.0",
+    "serverless-google-cloudfunctions": "^1.0.0",
     "shelljs": "^0.7.7",
     "tape": "4.6.3",
     "uuid": "3.0.1",
     "yargonaut": "^1.1.2",
-    "yargs": "^6.6.0",
-    "serverless-google-cloudfunctions": "^1.0.0",
-    "aws-sdk": "^2.7.9"
+    "yargs": "^6.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
