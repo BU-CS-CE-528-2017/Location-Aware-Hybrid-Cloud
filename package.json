@@ -47,6 +47,7 @@
 		"eslint-plugin-import": "^2.2.0"
 	},
 	"scripts": {
+		"start": "node dist/files/local.js",
 		"build": "babel src --out-dir dist",
 		"test": "tape src/**/test*.js",
 		"index": "cd dist && node index.js --mode live",
