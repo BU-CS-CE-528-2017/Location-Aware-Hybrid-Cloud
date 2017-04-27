@@ -24,9 +24,9 @@ You need to have an AWS account and save the root access key in .aws folder. Det
 The provider is aws and only augrement supported now is regions to be deployed in aws.
 ```
 /* @cloud 
-  - Provider: aws
-  - Args: 
-    - Region: 'some region'
+Provider:aws
+S3:true
+Region: us-east-2
 */
 ```
 
@@ -35,11 +35,10 @@ You need to have an Google Cloud Service account, create corresponding project f
 The provider is gcf as google cloud function and passing arguements includes the region that is supposed to deploy, projectId which is created in google cloud console and path for the credential key file.
 ```
 /* @cloud 
-  - Provider: gcf
-  - Args: 
-    - Region: 'some region'
-    - Project: ‘someId’
-    - Credential: 'file'
+Provider: goog
+Region: us-central1
+Project: testgfc-164121
+Credentions: /Users/star/.gcloud/testgfc-bcc6039af0aa.json
 */
 ```
 ### How to run the project
