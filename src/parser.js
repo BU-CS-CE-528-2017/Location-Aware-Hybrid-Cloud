@@ -175,7 +175,7 @@ module.exports = function({ types: t }) {
 
 	const createServerlessgoogDeployment = (name, platform) => {
 		const project_name = platform['project'];
-		const Credentions_path = platform['Credentions']
+		const Credentions_path = platform['credentions']
 		var Region_name = 'us-central1';
 		if('region' in platform){
 			Region_name = platform['region'];
