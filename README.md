@@ -2,9 +2,6 @@
 The project can be found on npm.org [Location Aware Hybrid Cloud.](https://www.npmjs.com/package/location-aware-hybrid-cloud)
 run `npm install location-aware-hybrid-cloud --save` to install through npm manager.<br>
 
-**Mentor:** *Rodrigo Manyari* <br>
-**Group Member:** *Jiaxing Tian, John Keisling, Prerana Haridoss, Tianyu Gu* <br>
-
 ## Vision and Goals Of The Project:
 Some interesting large datasets reside in public cloud providers, such as Google Cloud Services (GCS) and Amazon Web Services (AWS). However, a company may desire certain calculations and information to only reside in its private cloud. Moving large amounts of data from the public cloud to the private cloud is expensive and time consuming. This project aims to build a toolkit that achieves computational locality by using a combination “Function as a Service” (FaaS) and containers. In this way, preliminary calculations and queries can be implemented in a public cloud, and then the intermediate result can be transferred back to private cloud. High-level goals of this project include:
 * Enabling computational locality via FaaS: This application will transpile the input functions so as to call its equivalent cloud functions in different cloud.
