@@ -12,7 +12,7 @@ function getnumber(obj) {
 	console.log('fetch from' +  bucket);
 	var nums = []
 
- var result = new Promise ((resolve,reject) => {
+ 	var result = new Promise ((resolve,reject) => {
 		s3.getObject({ Bucket: bucket, Key: key }, function (error, data) {
 			console.log("fetching...");
 			if (error != null) {
@@ -28,8 +28,14 @@ function getnumber(obj) {
 			}
 		});
 	});
-
-	return Promise.resolve(result);
+	var sum = 0;
+	const avg = result.then((numbers) =>{
+		for (var i =0 ; i < numbers.length; i++){
+			sum = sum + numbers[i];
+		}
+		return sum/numbers.length;
+	}
+	return Promise.resolve(avg);
 }
 
 /* @cloud 
@@ -40,8 +46,8 @@ Credentions: /Users/reimari/.gcloud/testgfc-bcc6039af0aa.json
 */
 function getRevenue(obj2){
 	//Calculate Average
-	var n = obj2.n;
-	return Promise.resolve(n);
+	var name = obj2.name;
+	return Promise.resolve(`hello ${name}`);
 }
 
 var aws = {
@@ -77,7 +83,7 @@ router.get("/overview",function(req,res){
 // };
 
 var obj2 = {
-	n: [1,2,3,4]
+	name: "Aaron"
 };
 
 app.post('/aws', function(req, res){
@@ -89,8 +95,8 @@ app.post('/aws', function(req, res){
 
 app.post('/goog', function(req,res){
 	getRevenue(obj2).then((result) => {
-		console.log("Running on GCS, prime numbers are: " + result);
-		res.send("Running on GCS prime numbers are: " + result);
+		console.log("Running on GCS, returned" + result);
+		res.send("Running on GCS, returned " + result);
 	});
 });
 
