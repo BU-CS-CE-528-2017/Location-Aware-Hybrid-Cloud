@@ -117,3 +117,6 @@ var yargOptions = {
 
 ### Example Express JS file
 The src/main.js shows an example expressjs app with webpage in view folder. Update the local file path in main.js in order to run the applicaion. The application has two cloud function. One is deployed and runs on AWS Lambda, the other runs on Google Cloud Function. Click the button to see the result from each cloud function. 
+
+## Video Presentation
+https://www.youtube.com/watch?v=pHsHPiI_Af0
